@@ -1,7 +1,7 @@
 use std::io::{Read};
 use std::process::{Command, Stdio};
 
-fn main() {
+fn zfs_all() -> String {
 
     let mut child = Command::new("zfs")
         .arg("get")
@@ -18,6 +18,14 @@ fn main() {
 
     let _output = child.wait_with_output();
     // println!("output = {:?}", output);
+
+    read_buffer
+
+}
+
+fn main() {
+
+    let mut _read_buffer = zfs_all();
 
     println!("Yay!");
 

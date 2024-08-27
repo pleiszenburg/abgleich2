@@ -23,12 +23,19 @@ fn zfs_all() -> String {
 
 }
 
+fn parse_line(line: &str) {
+
+    println!("{:?}", line);
+
+}
+
 fn parse_lines(raw: String) -> i64 {
 
     let lines = raw.split("\n");
 
     let mut count: i64 = 0;
-    for _line in lines {
+    for line in lines {
+        parse_line(line);
         count += 1;
     }
 

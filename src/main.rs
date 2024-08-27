@@ -23,9 +23,25 @@ fn zfs_all() -> String {
 
 }
 
+fn parse_lines(raw: String) -> i64 {
+
+    let lines = raw.split("\n");
+
+    let mut count: i64 = 0;
+    for _line in lines {
+        count += 1;
+    }
+
+    count
+
+}
+
 fn main() {
 
-    let mut _read_buffer = zfs_all();
+    let raw = zfs_all();
+
+    let count = parse_lines(raw);
+    println!("len(line) == {:?}", count);
 
     println!("Yay!");
 

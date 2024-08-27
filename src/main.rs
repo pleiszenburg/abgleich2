@@ -1,4 +1,4 @@
-use std::io::{self, Read, Write};
+use std::io::{Read};
 use std::process::{Command, Stdio};
 
 fn main() {
@@ -10,19 +10,15 @@ fn main() {
         .stdout(Stdio::piped())
         .spawn().unwrap();
 
-    let mut child_stdout = child.stdout.as_mut().unwrap();
+    let child_stdout = child.stdout.as_mut().unwrap();
 
     let mut read_buffer = String::new();
+    let _read_res = child_stdout.read_to_string(&mut read_buffer);
+    // println!("length = {:?}", read_buffer.bytes());
 
-    let read_res = child_stdout.read_to_string(&mut read_buffer);
-
-    // // Close stdin to finish and avoid indefinite blocking
-    // drop(child_stdout);
-
-    let output = child.wait_with_output();
+    let _output = child.wait_with_output();
+    // println!("output = {:?}", output);
 
     println!("Yay!");
-    println!("output = {:?}", output);
-    println!("length = {:?}", read_buffer.bytes());
 
 }

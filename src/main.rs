@@ -49,7 +49,7 @@ fn parse_lines(raw: &String) -> i64 {
 
     let mut count: i64 = 0;
     for line in lines {
-        let _field = parse_line(line);
+        let _field = parse_line(&line);
         count += 1;
     }
 

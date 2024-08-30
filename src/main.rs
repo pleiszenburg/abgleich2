@@ -123,12 +123,24 @@ fn lines_to_raw_properties(raw: &String) -> Vec<RawProperty> {
 
 }
 
+fn raw_properties_to_datasets(raw_properties: Vec<RawProperty>) -> Vec<Dataset> {
+
+    let datasets = Vec::new();
+
+
+    datasets
+
+}
+
 fn main() {
 
     let raw_output = cmd_zfs_all_rhp();
 
     let raw_properties: Vec<RawProperty> = lines_to_raw_properties(&raw_output);
-    println!("len(line) == {:?}", raw_properties.len());
+    println!("len(raw_properties) == {:?}", raw_properties.len());
+
+    let datasets = raw_properties_to_datasets(raw_properties);
+    println!("len(datasets) == {:?}", datasets.len());
 
     println!("Yay!");
 

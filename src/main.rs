@@ -46,10 +46,15 @@ fn parse_line(line: &str) -> RawParam{
 fn parse_lines(raw: &String) -> i64 {
 
     let lines = raw.split("\n");
+    let chars: &[_] = &[' ', '\t'];
 
     let mut count: i64 = 0;
     for line in lines {
-        let _field = parse_line(&line);
+        let line_cleaned = line.trim_matches(chars);
+        if line_cleaned.len() == 0 {
+            continue;
+        }
+        let _field = parse_line(&line_cleaned);
         count += 1;
     }
 

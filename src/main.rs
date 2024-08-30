@@ -47,32 +47,32 @@ fn parse_line(line: &str) -> RawProperty{
 
     let mut fragments = line.split("\t");
 
-    let field = RawProperty {
+    let rawproperty = RawProperty {
         name: fragments.next().unwrap().to_string(),
         property: fragments.next().unwrap().to_string(),
         value: fragments.next().unwrap().to_string(),
     };
 
-    field
+    rawproperty
 
 }
 
-fn parse_lines(raw: &String) -> i64 {
+fn parse_lines(raw: &String) -> Vec<RawProperty> {
 
     let lines = raw.split("\n");
     let chars: &[_] = &[' ', '\t'];
+    let mut rawproperties: Vec<RawProperty> = Vec::new();
 
-    let mut count: i64 = 0;
     for line in lines {
         let line_cleaned = line.trim_matches(chars);
         if line_cleaned.len() == 0 {
             continue;
         }
-        let _field = parse_line(&line_cleaned);
-        count += 1;
+        let rawproperty = parse_line(&line_cleaned);
+        rawproperties.push(rawproperty);
     }
 
-    count
+    rawproperties
 
 }
 
@@ -80,8 +80,8 @@ fn main() {
 
     let raw = zfs_all();
 
-    let count = parse_lines(&raw);
-    println!("len(line) == {:?}", count);
+    let rawproperties = parse_lines(&raw);
+    println!("len(line) == {:?}", rawproperties.len());
 
     println!("Yay!");
 

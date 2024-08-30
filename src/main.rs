@@ -7,19 +7,68 @@ struct RawProperty {
     value: String,
 }
 
-/*
-
 enum Origin {
     Inherited(String),
     Local,
-    Stat,
+    Default,
 }
 
-enum Property {
-
+enum DatasetType {
+    Filesystem,
+    Volume,
+    Snapshot,
 }
 
-*/
+struct Property<T> {
+    value: Option<T>,
+    origin: Option<Origin>,
+}
+
+struct Stat<T> {
+    value: Option<T>,
+}
+
+struct Dataset {
+
+    name: String,
+
+    atime: Property<bool>,
+    canmount: Property<bool>,
+    checksum: Property<bool>,
+    compression: Property<String>,
+    datasettype: Property<DatasetType>,
+    dedup: Property<bool>,
+    encryption: Property<bool>,
+    filesystem_count: Property<i64>,
+    filesystem_limit: Property<i64>,
+    mountpoint: Property<String>,
+    readonly: Property<bool>,
+    redundant_metadata: Property<String>,
+    relatime: Property<bool>,
+    sharenfs: Property<bool>,
+    snapshot_count: Property<i64>,
+    snapshot_limit: Property<i64>,
+    sync: Property<String>,
+    volmode: Property<String>,
+
+    available: Stat<i64>,
+    compressratio: Stat<f32>,
+    creation: Stat<i64>,
+    guid: Stat<i64>,
+    logicalreferenced: Stat<i64>,
+    logicalused: Stat<i64>,
+    mounted: Stat<bool>,
+    refcompressratio: Stat<f32>,
+    referenced: Stat<i64>,
+    used: Stat<i64>,
+    usedbychildren: Stat<i64>,
+    usedbydataset: Stat<i64>,
+    usedbyrefreservation: Stat<i64>,
+    usedbysnapshots: Stat<i64>,
+    version: Stat<i64>,
+    written: Stat<i64>,
+
+}
 
 fn cmd_zfs_all_rhp() -> String {
 

@@ -21,67 +21,65 @@ enum Property {
 
 */
 
-fn zfs_all() -> String {
+fn cmd_zfs_all_rhp() -> String {
 
-    let mut child = Command::new("zfs")
+    let mut proc = Command::new("zfs")
         .arg("get")
         .arg("all")
         .arg("-rHp")
         .stdout(Stdio::piped())
         .spawn().unwrap();
 
-    let child_stdout = child.stdout.as_mut().unwrap();
+    let proc_stdout = proc.stdout.as_mut().unwrap();
+    let mut stdout_buffer = String::new();
 
-    let mut read_buffer = String::new();
-    let _read_res = child_stdout.read_to_string(&mut read_buffer);
-    // println!("length = {:?}", read_buffer.bytes());
+    let _read_res = proc_stdout.read_to_string(&mut stdout_buffer);
 
-    let _output = child.wait_with_output();
-    // println!("output = {:?}", output);
+    let _output = proc.wait_with_output();
 
-    read_buffer
+    stdout_buffer
 
 }
 
-fn parse_line(line: &str) -> RawProperty{
+fn line_to_raw_property(line: &str) -> RawProperty{
 
     let mut fragments = line.split("\t");
 
-    let rawproperty = RawProperty {
+    let raw_property = RawProperty {
         name: fragments.next().unwrap().to_string(),
         property: fragments.next().unwrap().to_string(),
         value: fragments.next().unwrap().to_string(),
     };
 
-    rawproperty
+    raw_property
 
 }
 
-fn parse_lines(raw: &String) -> Vec<RawProperty> {
+fn lines_to_raw_properties(raw: &String) -> Vec<RawProperty> {
 
     let lines = raw.split("\n");
     let chars: &[_] = &[' ', '\t'];
-    let mut rawproperties: Vec<RawProperty> = Vec::new();
+    let mut raw_properties: Vec<RawProperty> = Vec::new();
 
     for line in lines {
         let line_cleaned = line.trim_matches(chars);
         if line_cleaned.len() == 0 {
             continue;
         }
-        let rawproperty = parse_line(&line_cleaned);
-        rawproperties.push(rawproperty);
+        let raw_property = line_to_raw_property(&line_cleaned);
+        raw_properties.push(raw_property);
     }
 
-    rawproperties
+    raw_properties
 
 }
 
 fn main() {
 
-    let raw = zfs_all();
+    let raw_output = cmd_zfs_all_rhp();
 
-    let rawproperties = parse_lines(&raw);
-    println!("len(line) == {:?}", rawproperties.len());
+    let raw_properties: Vec<RawProperty> = lines_to_raw_properties(&raw_output);
+    println!("len(line) == {:?}", raw_properties.len());
 
     println!("Yay!");
 

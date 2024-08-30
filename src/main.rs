@@ -1,11 +1,25 @@
 use std::io::{Read};
 use std::process::{Command, Stdio};
 
-struct RawParam {
-    dataset: String,
-    key: String,
+struct RawProperty {
+    name: String,
+    property: String,
     value: String,
 }
+
+/*
+
+enum Origin {
+    Inherited(String),
+    Local,
+    Stat,
+}
+
+enum Property {
+
+}
+
+*/
 
 fn zfs_all() -> String {
 
@@ -29,13 +43,13 @@ fn zfs_all() -> String {
 
 }
 
-fn parse_line(line: &str) -> RawParam{
+fn parse_line(line: &str) -> RawProperty{
 
     let mut fragments = line.split("\t");
 
-    let field = RawParam {
-        dataset: fragments.next().unwrap().to_string(),
-        key: fragments.next().unwrap().to_string(),
+    let field = RawProperty {
+        name: fragments.next().unwrap().to_string(),
+        property: fragments.next().unwrap().to_string(),
         value: fragments.next().unwrap().to_string(),
     };
 

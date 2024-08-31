@@ -15,6 +15,21 @@ enum Origin {
     Default,
 }
 
+impl Origin {
+    fn from_raw(raw: String) -> Self {
+        if raw == "local".to_string() {
+            return Self::Local;
+        }
+        if raw == "default".to_string() {
+            return Self::Default;
+        }
+        if raw.starts_with("inherited from") {
+            return Self::Inherited(raw[14..].to_string());
+        }
+        panic!("expected origin");
+    }
+}
+
 enum DatasetType {
     Filesystem,
     Volume,
@@ -189,19 +204,6 @@ fn lines_to_raw_properties(raw: &String) -> Vec<RawProperty> {
 
 }
 
-fn raw_origin_to_origin(raw: String) -> Origin {
-    if raw == "local".to_string() {
-        return Origin::Local;
-    }
-    if raw == "default".to_string() {
-        return Origin::Default;
-    }
-    if raw.starts_with("inherited from") {
-        return Origin::Inherited(raw[14..].to_string());
-    }
-    panic!("expected origin");
-}
-
 fn parse_onoff(raw: String) -> bool {
     match raw.as_str() {
         "on" => { true }
@@ -215,7 +217,7 @@ fn raw_property_to_value(dataset: &mut Dataset, raw_property: &RawProperty) {
     match raw_property.name.as_str() {
         "atime" => {
             dataset.atime.value = Some(parse_onoff(raw_property.value.clone()));
-            dataset.atime.origin = Some(raw_origin_to_origin(raw_property.meta.clone()));
+            dataset.atime.origin = Some(Origin::from_raw(raw_property.meta.clone()));
         }
         _ => {
             // unknown parameter

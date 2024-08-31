@@ -1,10 +1,12 @@
-use std::io::{Read};
+use std::collections::HashMap;
+use std::io::Read;
 use std::process::{Command, Stdio};
 
 struct RawProperty {
+    dataset: String,
     name: String,
-    property: String,
     value: String,
+    meta: String,
 }
 
 enum Origin {
@@ -24,8 +26,25 @@ struct Property<T> {
     origin: Option<Origin>,
 }
 
+impl<T> Property<T> {
+    fn empty () -> Property<T> {
+        Property{
+            value: None,
+            origin: None,
+        }
+    }
+}
+
 struct Stat<T> {
     value: Option<T>,
+}
+
+impl<T> Stat<T> {
+    fn empty () -> Stat<T> {
+        Stat{
+            value: None,
+        }
+    }
 }
 
 struct Dataset {
@@ -70,6 +89,52 @@ struct Dataset {
 
 }
 
+impl Dataset {
+    fn new (name: String) -> Self{
+        Self {
+
+            name: name,
+
+            atime: Property::empty(),
+            canmount: Property::empty(),
+            checksum: Property::empty(),
+            compression: Property::empty(),
+            datasettype: Property::empty(),
+            dedup: Property::empty(),
+            encryption: Property::empty(),
+            filesystem_count: Property::empty(),
+            filesystem_limit: Property::empty(),
+            mountpoint: Property::empty(),
+            readonly: Property::empty(),
+            redundant_metadata: Property::empty(),
+            relatime: Property::empty(),
+            sharenfs: Property::empty(),
+            snapshot_count: Property::empty(),
+            snapshot_limit: Property::empty(),
+            sync: Property::empty(),
+            volmode: Property::empty(),
+
+            available: Stat::empty(),
+            compressratio: Stat::empty(),
+            creation: Stat::empty(),
+            guid: Stat::empty(),
+            logicalreferenced: Stat::empty(),
+            logicalused: Stat::empty(),
+            mounted: Stat::empty(),
+            refcompressratio: Stat::empty(),
+            referenced: Stat::empty(),
+            used: Stat::empty(),
+            usedbychildren: Stat::empty(),
+            usedbydataset: Stat::empty(),
+            usedbyrefreservation: Stat::empty(),
+            usedbysnapshots: Stat::empty(),
+            version: Stat::empty(),
+            written: Stat::empty(),
+
+        }
+    }
+}
+
 fn cmd_zfs_all_rhp() -> String {
 
     let mut proc = Command::new("zfs")
@@ -95,9 +160,10 @@ fn line_to_raw_property(line: &str) -> RawProperty{
     let mut fragments = line.split("\t");
 
     let raw_property = RawProperty {
+        dataset: fragments.next().unwrap().to_string(),
         name: fragments.next().unwrap().to_string(),
-        property: fragments.next().unwrap().to_string(),
         value: fragments.next().unwrap().to_string(),
+        meta: fragments.next().unwrap().to_string(),
     };
 
     raw_property
@@ -123,10 +189,100 @@ fn lines_to_raw_properties(raw: &String) -> Vec<RawProperty> {
 
 }
 
-fn raw_properties_to_datasets(raw_properties: Vec<RawProperty>) -> Vec<Dataset> {
+fn raw_origin_to_origin(raw: String) -> Origin {
+    if raw == "local".to_string() {
+        return Origin::Local;
+    }
+    if raw == "default".to_string() {
+        return Origin::Default;
+    }
+    if raw.starts_with("inherited from") {
+        return Origin::Inherited(raw[14..].to_string());
+    }
+    panic!("expected origin");
+}
 
-    let datasets = Vec::new();
+fn parse_onoff(raw: String) -> bool {
+    match raw.as_str() {
+        "on" => { true }
+        "off" => { false }
+        _ => { panic!("expected on/off bool") }
+    }
+}
 
+fn raw_property_to_value(dataset: &mut Dataset, raw_property: &RawProperty) {
+
+    match raw_property.name.as_str() {
+        "atime" => {
+            dataset.atime.value = Some(parse_onoff(raw_property.value.clone()));
+            dataset.atime.origin = Some(raw_origin_to_origin(raw_property.meta.clone()));
+        }
+        _ => {
+            // unknown parameter
+        }
+        /*
+
+        atime,
+        canmount
+        checksum:
+        compression
+        datasettype
+        dedup
+        encryption
+        filesystem_count
+        filesystem_limit
+        mountpoint
+        readonly
+        redundant_metadata
+        relatime
+        sharenfs
+        snapshot_count
+        snapshot_limit
+        sync
+        volmode
+
+        available
+        compressratio
+        creation
+        guid
+        logicalreferenced
+        logicalused
+        mounted
+        refcompressratio
+        referenced
+        used
+        usedbychildren
+        usedbydataset
+        usedbyrefreservation
+        usedbysnapshots
+        version
+        written
+
+         */
+    }
+
+}
+
+fn raw_properties_to_datasets(raw_properties: Vec<RawProperty>) -> HashMap<String, Dataset> {
+
+    let mut datasets: HashMap<String, Dataset> = HashMap::new();
+
+    for raw_property in raw_properties {
+
+        let name: String = raw_property.dataset.to_string();
+        let item = datasets.get_mut(&name);
+        match item {
+            None => {
+                let mut new_dataset = Dataset::new(name.to_string());
+                raw_property_to_value(&mut new_dataset, &raw_property);
+                datasets.insert(name.to_string(), new_dataset);
+            },
+            _ => {
+                raw_property_to_value(&mut item.unwrap(), &raw_property);
+            }
+        }
+
+    }
 
     datasets
 

@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::io::Read;
 use std::process::{Command, Stdio};
 
+#[derive(Debug)]
 struct RawProperty {
     dataset: String,
     name: String,
@@ -74,17 +75,87 @@ enum DatasetType {
     Snapshot,
 }
 
+impl DatasetType {
+    fn from_raw(raw: String) -> Self {
+        match raw.as_str() {
+            "filesystem" => {
+                Self::Filesystem
+            }
+            "volume" => {
+                Self::Volume
+            }
+            "snapshot" => {
+                Self::Snapshot
+            }
+            _ => {
+                panic!("expected dataset type");
+            }
+        }
+    }
+}
+
 struct Property<T> {
     value: Option<T>,
     origin: Option<Origin>,
 }
 
 impl<T> Property<T> {
-    fn from_empty () -> Property<T> {
-        Property{
+    fn from_empty() -> Property<T> {
+        Property {
             value: None,
             origin: None,
         }
+    }
+}
+
+impl Property<DatasetType> {
+    fn fill(&mut self, raw_property: &RawProperty) {
+        self.value = Some(DatasetType::from_raw(raw_property.value.clone()));
+        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+    }
+}
+
+impl Property<bool> {
+    fn fill(&mut self, raw_property: &RawProperty) {
+        self.value = Some(parse_onoff(raw_property.value.clone()));
+        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+    }
+}
+
+impl Property<i64> {
+    fn fill(&mut self, raw_property: &RawProperty) {
+        let result = raw_property.value.parse::<i64>();
+        match result {
+            Ok(number) => {
+                self.value = Some(number);
+            }
+            Err(error) => {
+                panic!("i64 parser fail on {:?} with {:?}", raw_property, error);
+            }
+        }
+        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+    }
+}
+
+impl Property<u64> {
+    fn fill(&mut self, raw_property: &RawProperty) {
+        let result = raw_property.value.parse::<u64>();
+        match result {
+            Ok(number) => {
+                self.value = Some(number);
+            }
+            Err(error) => {
+                panic!("u64 parser fail on {:?} with {:?}", raw_property, error);
+            }
+        }
+        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+    }
+}
+
+impl Property<String> {
+    fn fill(&mut self, raw_property: &RawProperty) {
+        self.value = Some(raw_property.value.clone());
+        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
     }
 }
 
@@ -111,15 +182,15 @@ struct Dataset {
     datasettype: Property<DatasetType>,
     dedup: Property<bool>,
     encryption: Property<bool>,
-    filesystem_count: Property<i64>,
-    filesystem_limit: Property<i64>,
+    filesystem_count: Property<u64>,
+    filesystem_limit: Property<u64>,
     mountpoint: Property<String>,
     readonly: Property<bool>,
     redundant_metadata: Property<String>,
     relatime: Property<bool>,
     sharenfs: Property<bool>,
-    snapshot_count: Property<i64>,
-    snapshot_limit: Property<i64>,
+    snapshot_count: Property<u64>,
+    snapshot_limit: Property<u64>,
     sync: Property<String>,
     volmode: Property<String>,
 
@@ -223,33 +294,26 @@ fn parse_onoff(raw: String) -> bool {
 fn raw_property_to_value(dataset: &mut Dataset, raw_property: &RawProperty) {
 
     match raw_property.name.as_str() {
-        "atime" => {
-            dataset.atime.value = Some(parse_onoff(raw_property.value.clone()));
-            dataset.atime.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-        }
-        _ => {
-            // unknown parameter
-        }
-        /*
+        "atime" => { dataset.atime.fill(raw_property) },
+        "canmount" => { dataset.canmount.fill(raw_property) },
+        "checksum" => { dataset.checksum.fill(raw_property) },
+        "compression" => { dataset.compression.fill(raw_property) },
+        "datasettype" => { dataset.datasettype.fill(raw_property) },
+        "encryption" => { dataset.encryption.fill(raw_property) },
+        "filesystem_count" => { dataset.filesystem_count.fill(raw_property) },
+        "filesystem_limit" => { dataset.filesystem_limit.fill(raw_property) },
+        "mountpoint" => { dataset.mountpoint.fill(raw_property) },
+        "readonly" => { dataset.readonly.fill(raw_property) },
+        "redundant_metadata" => { dataset.redundant_metadata.fill(raw_property) },
+        "relatime" => { dataset.relatime.fill(raw_property) },
+        "sharenfs" => { dataset.sharenfs.fill(raw_property) },
+        "snapshot_count" => { dataset.snapshot_count.fill(raw_property) },
+        "snapshot_limit" => { dataset.snapshot_limit.fill(raw_property) },
+        "sync" => { dataset.sync.fill(raw_property) },
+        "volmode" => { dataset.volmode.fill(raw_property) },
+        _ => { /* unknown parameter */ }
 
-        atime,
-        canmount
-        checksum:
-        compression
-        datasettype
-        dedup
-        encryption
-        filesystem_count
-        filesystem_limit
-        mountpoint
-        readonly
-        redundant_metadata
-        relatime
-        sharenfs
-        snapshot_count
-        snapshot_limit
-        sync
-        volmode
+        /*
 
         available
         compressratio

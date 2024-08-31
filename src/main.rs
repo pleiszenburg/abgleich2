@@ -9,6 +9,44 @@ struct RawProperty {
     meta: String,
 }
 
+impl RawProperty {
+
+    fn from_line(line: &str) -> Self{
+
+        let mut fragments = line.split("\t");
+
+        let raw_property = Self {
+            dataset: fragments.next().unwrap().to_string(),
+            name: fragments.next().unwrap().to_string(),
+            value: fragments.next().unwrap().to_string(),
+            meta: fragments.next().unwrap().to_string(),
+        };
+
+        raw_property
+
+    }
+
+    fn from_raw(raw: &String) -> Vec<Self> {
+
+        let lines = raw.split("\n");
+        let chars: &[_] = &[' ', '\t'];
+        let mut raw_properties: Vec<Self> = Vec::new();
+
+        for line in lines {
+            let line_cleaned = line.trim_matches(chars);
+            if line_cleaned.len() == 0 {
+                continue;
+            }
+            let raw_property = Self::from_line(&line_cleaned);
+            raw_properties.push(raw_property);
+        }
+
+        raw_properties
+
+    }
+
+}
+
 enum Origin {
     Inherited(String),
     Local,
@@ -170,40 +208,6 @@ fn cmd_zfs_all_rhp() -> String {
 
 }
 
-fn line_to_raw_property(line: &str) -> RawProperty{
-
-    let mut fragments = line.split("\t");
-
-    let raw_property = RawProperty {
-        dataset: fragments.next().unwrap().to_string(),
-        name: fragments.next().unwrap().to_string(),
-        value: fragments.next().unwrap().to_string(),
-        meta: fragments.next().unwrap().to_string(),
-    };
-
-    raw_property
-
-}
-
-fn lines_to_raw_properties(raw: &String) -> Vec<RawProperty> {
-
-    let lines = raw.split("\n");
-    let chars: &[_] = &[' ', '\t'];
-    let mut raw_properties: Vec<RawProperty> = Vec::new();
-
-    for line in lines {
-        let line_cleaned = line.trim_matches(chars);
-        if line_cleaned.len() == 0 {
-            continue;
-        }
-        let raw_property = line_to_raw_property(&line_cleaned);
-        raw_properties.push(raw_property);
-    }
-
-    raw_properties
-
-}
-
 fn parse_onoff(raw: String) -> bool {
     match raw.as_str() {
         "on" => { true }
@@ -294,7 +298,7 @@ fn main() {
 
     let raw_output = cmd_zfs_all_rhp();
 
-    let raw_properties: Vec<RawProperty> = lines_to_raw_properties(&raw_output);
+    let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw_output);
     println!("len(raw_properties) == {:?}", raw_properties.len());
 
     let datasets = raw_properties_to_datasets(raw_properties);

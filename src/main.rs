@@ -80,7 +80,7 @@ struct Property<T> {
 }
 
 impl<T> Property<T> {
-    fn empty () -> Property<T> {
+    fn from_empty () -> Property<T> {
         Property{
             value: None,
             origin: None,
@@ -93,7 +93,7 @@ struct Stat<T> {
 }
 
 impl<T> Stat<T> {
-    fn empty () -> Stat<T> {
+    fn from_empty () -> Stat<T> {
         Stat{
             value: None,
         }
@@ -143,49 +143,53 @@ struct Dataset {
 }
 
 impl Dataset {
-    fn new (name: String) -> Self{
+
+    fn new (name: String) -> Self {
+
         Self {
 
             name: name,
 
-            atime: Property::empty(),
-            canmount: Property::empty(),
-            checksum: Property::empty(),
-            compression: Property::empty(),
-            datasettype: Property::empty(),
-            dedup: Property::empty(),
-            encryption: Property::empty(),
-            filesystem_count: Property::empty(),
-            filesystem_limit: Property::empty(),
-            mountpoint: Property::empty(),
-            readonly: Property::empty(),
-            redundant_metadata: Property::empty(),
-            relatime: Property::empty(),
-            sharenfs: Property::empty(),
-            snapshot_count: Property::empty(),
-            snapshot_limit: Property::empty(),
-            sync: Property::empty(),
-            volmode: Property::empty(),
+            atime: Property::from_empty(),
+            canmount: Property::from_empty(),
+            checksum: Property::from_empty(),
+            compression: Property::from_empty(),
+            datasettype: Property::from_empty(),
+            dedup: Property::from_empty(),
+            encryption: Property::from_empty(),
+            filesystem_count: Property::from_empty(),
+            filesystem_limit: Property::from_empty(),
+            mountpoint: Property::from_empty(),
+            readonly: Property::from_empty(),
+            redundant_metadata: Property::from_empty(),
+            relatime: Property::from_empty(),
+            sharenfs: Property::from_empty(),
+            snapshot_count: Property::from_empty(),
+            snapshot_limit: Property::from_empty(),
+            sync: Property::from_empty(),
+            volmode: Property::from_empty(),
 
-            available: Stat::empty(),
-            compressratio: Stat::empty(),
-            creation: Stat::empty(),
-            guid: Stat::empty(),
-            logicalreferenced: Stat::empty(),
-            logicalused: Stat::empty(),
-            mounted: Stat::empty(),
-            refcompressratio: Stat::empty(),
-            referenced: Stat::empty(),
-            used: Stat::empty(),
-            usedbychildren: Stat::empty(),
-            usedbydataset: Stat::empty(),
-            usedbyrefreservation: Stat::empty(),
-            usedbysnapshots: Stat::empty(),
-            version: Stat::empty(),
-            written: Stat::empty(),
+            available: Stat::from_empty(),
+            compressratio: Stat::from_empty(),
+            creation: Stat::from_empty(),
+            guid: Stat::from_empty(),
+            logicalreferenced: Stat::from_empty(),
+            logicalused: Stat::from_empty(),
+            mounted: Stat::from_empty(),
+            refcompressratio: Stat::from_empty(),
+            referenced: Stat::from_empty(),
+            used: Stat::from_empty(),
+            usedbychildren: Stat::from_empty(),
+            usedbydataset: Stat::from_empty(),
+            usedbyrefreservation: Stat::from_empty(),
+            usedbysnapshots: Stat::from_empty(),
+            version: Stat::from_empty(),
+            written: Stat::from_empty(),
 
         }
+
     }
+
 }
 
 fn cmd_zfs_all_rhp() -> String {

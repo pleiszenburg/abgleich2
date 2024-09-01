@@ -51,7 +51,10 @@ impl Table {
     }
 
     fn print_row(&self, row: &Vec<String>) {
-        println!("{:?}", row);
+        for column in row {
+            print!("| {} ", column);
+        }
+        print!("|\n");
     }
 
 }

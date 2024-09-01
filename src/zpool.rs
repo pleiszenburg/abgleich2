@@ -3,7 +3,7 @@ use crate::datasettype::DatasetType;
 use crate::rawproperty::RawProperty;
 use crate::table::Table;
 
-// use colored::Colorize;
+use colored::Colorize;
 
 use std::collections::HashMap;
 use std::io::Read;
@@ -128,8 +128,14 @@ impl Zpool {
         used: Option<u64>,
         referenced: Option<u64>,
         compressratio: Option<f32>,
-        _datasettype: &Option<DatasetType>,
+        datasettype: &Option<DatasetType>,
     ) {
+
+        let mut name = name.to_string();
+
+        if datasettype == &Some(DatasetType::Snapshot) {
+            name = name.bright_black().to_string();
+        }
 
         let used = used.unwrap();
         let referenced = referenced.unwrap();
@@ -137,15 +143,8 @@ impl Zpool {
 
         let used_msg = used.to_string(); // TODO
         let referenced_msg = referenced.to_string(); // TODO
-        let compressratio_msg = format!("{:.02}", compressratio);
 
-        // println!(
-        //     "{:?} | {:?} | {:?} | {:?}",
-        //     name,
-        //     used_msg,
-        //     referenced_msg,
-        //     compressratio_msg,
-        // );
+        let compressratio_msg = format!("{:.02}", compressratio);
 
         table.add_row(vec![name, used_msg, referenced_msg, compressratio_msg])
 

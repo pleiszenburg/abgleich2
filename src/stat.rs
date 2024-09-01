@@ -1,6 +1,8 @@
+use crate::datasettype::DatasetType;
 use crate::rawproperty::RawProperty;
 use crate::misc::parse_yesno;
 
+#[derive(Debug)]
 pub struct Stat<T> {
     pub value: Option<T>,
 }
@@ -10,6 +12,12 @@ impl<T> Stat<T> {
         Stat{
             value: None,
         }
+    }
+}
+
+impl Stat<DatasetType> {
+    pub fn fill(&mut self, raw_property: &RawProperty) {
+        self.value = Some(DatasetType::from_raw(raw_property.value.clone()));
     }
 }
 

@@ -1,4 +1,3 @@
-use crate::datasettype::DatasetType;
 use crate::misc::parse_onoff;
 use crate::origin::Origin;
 use crate::rawproperty::RawProperty;
@@ -15,13 +14,6 @@ impl<T> Property<T> {
             value: None,
             origin: None,
         }
-    }
-}
-
-impl Property<DatasetType> {
-    pub fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(DatasetType::from_raw(raw_property.value.clone()));
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
     }
 }
 

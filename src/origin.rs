@@ -16,6 +16,6 @@ impl Origin {
         if raw.starts_with("inherited from") {
             return Self::Inherited(raw[14..].to_string());
         }
-        panic!("expected origin");
+        panic!("expected origin {:?}", raw);
     }
 }

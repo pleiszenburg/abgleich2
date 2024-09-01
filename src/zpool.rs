@@ -1,7 +1,7 @@
 use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
 use crate::rawproperty::RawProperty;
-use crate::table::Table;
+use crate::table::{Table, Alignment};
 
 use colored::Colorize;
 
@@ -93,6 +93,12 @@ impl Zpool {
                 "used".to_string(),
                 "referenced".to_string(),
                 "compressratio".to_string(),
+            ],
+            vec![
+                Alignment::Left,
+                Alignment::Right,
+                Alignment::Right,
+                Alignment::Right,
             ]
         );
 

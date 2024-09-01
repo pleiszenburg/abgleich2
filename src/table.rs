@@ -2,16 +2,23 @@ use std::collections::HashMap;
 
 use console::measure_text_width;
 
+#[derive(PartialEq)]
+pub enum Alignment {
+    Left,
+    Right,
+}
+
 pub struct Table {
     head: Vec<String>,
     body: HashMap<String, Vec<String>>,
     rows: usize,
     widths: Vec<usize>,
+    alignment: Vec<Alignment>,
 }
 
 impl Table {
 
-    pub fn from_head(columns: Vec<String>) -> Self {
+    pub fn from_head(columns: Vec<String>, alignment: Vec<Alignment>) -> Self {
         let mut widths: Vec<usize> = Vec::new();
         let mut body: HashMap<String, Vec<String>> = HashMap::new();
         for name in &columns{
@@ -23,6 +30,7 @@ impl Table {
             body: body,
             rows: 0,
             widths: widths,
+            alignment: alignment,
         }
     }
 
@@ -55,10 +63,14 @@ impl Table {
     }
 
     fn print_row(&self, row: &Vec<String>) {
-        for (column, width) in row.iter().zip(&self.widths) {
+        for ((column, width), align) in row.iter().zip(&self.widths).zip(&self.alignment) {
             let diff = width - measure_text_width(column);
             let buff = str::repeat(" ", diff).to_string();
-            print!("| {}{} ", column, buff);
+            if *align == Alignment::Left {
+                print!("| {}{} ", column, buff);
+            } else if *align == Alignment::Right {
+                print!("| {}{} ", buff, column);
+            }
         }
         print!("|\n");
     }

@@ -3,7 +3,7 @@ use crate::rawproperty::RawProperty;
 
 use std::collections::HashMap;
 use std::io::Read;
-use std::process::{Child, Command, Stdio};
+use std::process::{Command, Stdio};
 
 pub struct Zpool {
 

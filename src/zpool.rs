@@ -3,7 +3,7 @@ use crate::rawproperty::RawProperty;
 
 use std::collections::HashMap;
 use std::io::Read;
-use std::process::{Command, Stdio};
+use std::process::{Child, Command, Stdio};
 
 pub struct Zpool {
 
@@ -45,8 +45,9 @@ impl Zpool {
             }
         }
         for name in snapshots {
-            let (parent, _) = name.split_once("@").unwrap();
-            let snapshot = zpool.datasets.remove(&name).unwrap();
+            let (parent, child) = name.split_once("@").unwrap();
+            let mut snapshot = zpool.datasets.remove(&name).unwrap();
+            snapshot.name = child.to_string();
             zpool.datasets.get_mut(parent).unwrap().add_snapshot(snapshot);
         }
 

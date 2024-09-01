@@ -44,6 +44,7 @@ impl Table {
 
     pub fn print(&mut self) {
         self.print_row(&self.head);
+        self.print_bar();
         for idx in 0..self.rows {
             let mut row: Vec<String> = Vec::new();
             for name in &self.head {
@@ -58,6 +59,14 @@ impl Table {
             let diff = width - measure_text_width(column);
             let buff = str::repeat(" ", diff).to_string();
             print!("| {}{} ", column, buff);
+        }
+        print!("|\n");
+    }
+
+    fn print_bar(&self) {
+        for width in &self.widths {
+            let buff = str::repeat("-", *width).to_string();
+            print!("|-{}-", buff);
         }
         print!("|\n");
     }

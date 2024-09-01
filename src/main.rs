@@ -1,132 +1,18 @@
+mod datasettype;
+mod misc;
+mod origin;
+mod property;
+mod rawproperty;
+mod stat;
+
+use crate::datasettype::DatasetType;
+use crate::property::Property;
+use crate::rawproperty::RawProperty;
+use crate::stat::Stat;
+
 use std::collections::HashMap;
 use std::io::Read;
 use std::process::{Command, Stdio};
-
-mod rawproperty;
-use rawproperty::RawProperty;
-
-enum Origin {
-    Inherited(String),
-    Local,
-    Default,
-}
-
-impl Origin {
-    fn from_raw(raw: String) -> Self {
-        if raw == "local".to_string() {
-            return Self::Local;
-        }
-        if raw == "default".to_string() {
-            return Self::Default;
-        }
-        if raw.starts_with("inherited from") {
-            return Self::Inherited(raw[14..].to_string());
-        }
-        panic!("expected origin");
-    }
-}
-
-enum DatasetType {
-    Filesystem,
-    Volume,
-    Snapshot,
-}
-
-impl DatasetType {
-    fn from_raw(raw: String) -> Self {
-        match raw.as_str() {
-            "filesystem" => {
-                Self::Filesystem
-            }
-            "volume" => {
-                Self::Volume
-            }
-            "snapshot" => {
-                Self::Snapshot
-            }
-            _ => {
-                panic!("expected dataset type");
-            }
-        }
-    }
-}
-
-struct Property<T> {
-    value: Option<T>,
-    origin: Option<Origin>,
-}
-
-impl<T> Property<T> {
-    fn from_empty() -> Property<T> {
-        Property {
-            value: None,
-            origin: None,
-        }
-    }
-}
-
-impl Property<DatasetType> {
-    fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(DatasetType::from_raw(raw_property.value.clone()));
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-    }
-}
-
-impl Property<bool> {
-    fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(parse_onoff(raw_property.value.clone()));
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-    }
-}
-
-impl Property<i64> {
-    fn fill(&mut self, raw_property: &RawProperty) {
-        let result = raw_property.value.parse::<i64>();
-        match result {
-            Ok(number) => {
-                self.value = Some(number);
-            }
-            Err(error) => {
-                panic!("i64 parser fail on {:?} with {:?}", raw_property, error);
-            }
-        }
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-    }
-}
-
-impl Property<u64> {
-    fn fill(&mut self, raw_property: &RawProperty) {
-        let result = raw_property.value.parse::<u64>();
-        match result {
-            Ok(number) => {
-                self.value = Some(number);
-            }
-            Err(error) => {
-                panic!("u64 parser fail on {:?} with {:?}", raw_property, error);
-            }
-        }
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-    }
-}
-
-impl Property<String> {
-    fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(raw_property.value.clone());
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-    }
-}
-
-struct Stat<T> {
-    value: Option<T>,
-}
-
-impl<T> Stat<T> {
-    fn from_empty () -> Stat<T> {
-        Stat{
-            value: None,
-        }
-    }
-}
 
 struct Dataset {
 
@@ -238,14 +124,6 @@ fn cmd_zfs_all_rhp() -> String {
 
     stdout_buffer
 
-}
-
-fn parse_onoff(raw: String) -> bool {
-    match raw.as_str() {
-        "on" => { true }
-        "off" => { false }
-        _ => { panic!("expected on/off bool") }
-    }
 }
 
 fn raw_property_to_value(dataset: &mut Dataset, raw_property: &RawProperty) {

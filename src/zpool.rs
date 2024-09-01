@@ -4,14 +4,15 @@ use crate::rawproperty::RawProperty;
 use crate::table::{Table, Alignment};
 
 use colored::Colorize;
+use indexmap::IndexMap;
 
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::io::Read;
 use std::process::{Command, Stdio};
 
 pub struct Zpool {
 
-    pub datasets: HashMap<String, Dataset>,
+    datasets: IndexMap<String, Dataset>,
 
 }
 
@@ -20,7 +21,7 @@ impl Zpool {
     pub fn from_raw(raw: String) -> Self {
 
         let mut zpool = Self {
-            datasets: HashMap::new(),
+            datasets: IndexMap::new(),
         };
 
         let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw);
@@ -50,7 +51,7 @@ impl Zpool {
         }
         for name in snapshots {
             let (parent, child) = name.split_once("@").unwrap();
-            let mut snapshot = zpool.datasets.remove(&name).unwrap();
+            let mut snapshot = zpool.datasets.shift_remove(&name).unwrap();
             snapshot.name = child.to_string();
             zpool.datasets.get_mut(parent).unwrap().add_snapshot(snapshot);
         }

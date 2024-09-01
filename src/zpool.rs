@@ -38,6 +38,18 @@ impl Zpool {
 
         }
 
+        let mut snapshots: Vec<String> = Vec::new();
+        for (name, _) in zpool.datasets.iter() {
+            if name.contains("@") {
+                snapshots.push(name.clone());
+            }
+        }
+        for name in snapshots {
+            let (parent, _) = name.split_once("@").unwrap();
+            let snapshot = zpool.datasets.remove(&name).unwrap();
+            zpool.datasets.get_mut(parent).unwrap().add_snapshot(snapshot);
+        }
+
         zpool
 
     }

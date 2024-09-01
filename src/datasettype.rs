@@ -1,3 +1,4 @@
+#[derive(PartialEq)]
 #[derive(Debug)]
 pub enum DatasetType {
     Filesystem,

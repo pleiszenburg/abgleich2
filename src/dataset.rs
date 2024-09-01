@@ -8,6 +8,9 @@ pub struct Dataset {
     // name or ZFS path
     pub name: String,
 
+    // for snapshots
+    pub children: Vec<Self>,
+
     // Properties which can be configured
     pub atime: Property<bool>,
     pub canmount: Property<bool>,
@@ -55,6 +58,8 @@ impl Dataset {
         Self {
 
             name: name,
+
+            children: Vec::new(),
 
             atime: Property::from_empty(),
             canmount: Property::from_empty(),
@@ -139,6 +144,25 @@ impl Dataset {
             _ => { /* TODO unknown parameter */ }
 
         }
+
+    }
+
+    pub fn add_snapshot(&mut self, snapshot: Self) {
+
+        if self.datasettype.value == None {
+            panic!("target dataset type unknown");
+        }
+        if snapshot.datasettype.value == None {
+            panic!("snapshot candidate dataset type unknown");
+        }
+        if self.datasettype.value == Some(DatasetType::Snapshot) {
+            panic!("can not add snapshot to snapshot")
+        }
+        if snapshot.datasettype.value != Some(DatasetType::Snapshot) {
+            panic!("snapshot candidate is not a snapshot")
+        }
+
+        self.children.push(snapshot);
 
     }
 

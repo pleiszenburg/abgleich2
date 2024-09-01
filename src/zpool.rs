@@ -84,7 +84,13 @@ impl Zpool {
     pub fn print_tree(&self) {
 
         for (_, dataset) in self.datasets.iter() {
-            println!("{:?} | {:?}", dataset.name, dataset.datasettype);
+            println!(
+                "{:?} | {:?} | {:?} | {:?}",
+                dataset.name,
+                dataset.used.value.unwrap(),
+                dataset.referenced.value.unwrap(),
+                dataset.compressratio.value.unwrap(),
+            );
         }
 
     }

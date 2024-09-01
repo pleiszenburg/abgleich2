@@ -20,7 +20,6 @@ impl Zpool {
         };
 
         let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw);
-        println!("len(raw_properties) == {:?}", raw_properties.len());  // TODO
 
         for raw_property in raw_properties {
 

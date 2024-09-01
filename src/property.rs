@@ -31,21 +31,6 @@ impl Property<bool> {
     }
 }
 
-// impl Property<i64> {
-//     pub fn fill(&mut self, raw_property: &RawProperty) {
-//         let result = raw_property.value.parse::<i64>();
-//         match result {
-//             Ok(number) => {
-//                 self.value = Some(number);
-//             }
-//             Err(error) => {
-//                 panic!("i64 parser fail on {:?} with {:?}", raw_property, error);
-//             }
-//         }
-//         self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
-//     }
-// }
-
 impl Property<u64> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
         let result = raw_property.value.parse::<u64>();

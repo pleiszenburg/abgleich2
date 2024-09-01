@@ -29,22 +29,22 @@ pub struct Dataset {
     pub volmode: Property<String>,
 
     // Properties which serve as statistics
-    pub available: Stat<i64>,
+    pub available: Stat<u64>,
     pub compressratio: Stat<f32>,
-    pub creation: Stat<i64>,
-    pub guid: Stat<i64>,
-    pub logicalreferenced: Stat<i64>,
-    pub logicalused: Stat<i64>,
+    pub creation: Stat<u64>,
+    pub guid: Stat<u64>,
+    pub logicalreferenced: Stat<u64>,
+    pub logicalused: Stat<u64>,
     pub mounted: Stat<bool>,
     pub refcompressratio: Stat<f32>,
-    pub referenced: Stat<i64>,
-    pub used: Stat<i64>,
-    pub usedbychildren: Stat<i64>,
-    pub usedbydataset: Stat<i64>,
-    pub usedbyrefreservation: Stat<i64>,
-    pub usedbysnapshots: Stat<i64>,
-    pub version: Stat<i64>,
-    pub written: Stat<i64>,
+    pub referenced: Stat<u64>,
+    pub used: Stat<u64>,
+    pub usedbychildren: Stat<u64>,
+    pub usedbydataset: Stat<u64>,
+    pub usedbyrefreservation: Stat<u64>,
+    pub usedbysnapshots: Stat<u64>,
+    pub version: Stat<u64>,
+    pub written: Stat<u64>,
 
 }
 
@@ -99,11 +99,13 @@ impl Dataset {
     pub fn fill(&mut self, raw_property: &RawProperty) {
 
         match raw_property.name.as_str() {
+
             "atime" => { self.atime.fill(raw_property) },
             "canmount" => { self.canmount.fill(raw_property) },
             "checksum" => { self.checksum.fill(raw_property) },
             "compression" => { self.compression.fill(raw_property) },
             "datasettype" => { self.datasettype.fill(raw_property) },
+            "dedup" => { self.dedup.fill(raw_property) },
             "encryption" => { self.encryption.fill(raw_property) },
             "filesystem_count" => { self.filesystem_count.fill(raw_property) },
             "filesystem_limit" => { self.filesystem_limit.fill(raw_property) },
@@ -116,28 +118,26 @@ impl Dataset {
             "snapshot_limit" => { self.snapshot_limit.fill(raw_property) },
             "sync" => { self.sync.fill(raw_property) },
             "volmode" => { self.volmode.fill(raw_property) },
-            _ => { /* unknown parameter */ }
 
-            /*
+            "available" => { self.available.fill(raw_property) },
+            "compressratio" => { self.compressratio.fill(raw_property) },
+            "creation" => { self.creation.fill(raw_property) },
+            "guid" => { self.guid.fill(raw_property) },
+            "logicalreferenced" => { self.logicalreferenced.fill(raw_property) },
+            "logicalused" => { self.logicalused.fill(raw_property) },
+            "mounted" => { self.mounted.fill(raw_property) },
+            "refcompressratio" => { self.refcompressratio.fill(raw_property) },
+            "referenced" => { self.referenced.fill(raw_property) },
+            "used" => { self.used.fill(raw_property) },
+            "usedbychildren" => { self.usedbychildren.fill(raw_property) },
+            "usedbydataset" => { self.usedbydataset.fill(raw_property) },
+            "usedbyrefreservation" => { self.usedbyrefreservation.fill(raw_property) },
+            "usedbysnapshots" => { self.usedbysnapshots.fill(raw_property) },
+            "version" => { self.version.fill(raw_property) },
+            "written" => { self.written.fill(raw_property) },
 
-            available
-            compressratio
-            creation
-            guid
-            logicalreferenced
-            logicalused
-            mounted
-            refcompressratio
-            referenced
-            used
-            usedbychildren
-            usedbydataset
-            usedbyrefreservation
-            usedbysnapshots
-            version
-            written
+            _ => { /* TODO unknown parameter */ }
 
-             */
         }
 
     }

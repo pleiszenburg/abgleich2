@@ -5,6 +5,7 @@ mod origin;
 mod property;
 mod rawproperty;
 mod stat;
+mod table;
 mod zpool;
 
 use crate::zpool::Zpool;

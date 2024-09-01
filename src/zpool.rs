@@ -1,8 +1,9 @@
 use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
 use crate::rawproperty::RawProperty;
+use crate::table::Table;
 
-use humansize::{format_size, DECIMAL};
+// use colored::Colorize;
 
 use std::collections::HashMap;
 use std::io::Read;
@@ -86,8 +87,18 @@ impl Zpool {
 
     pub fn print_tree(&self) {
 
+        let mut table = Table::from_head(
+            vec![
+                "name".to_string(),
+                "used".to_string(),
+                "referenced".to_string(),
+                "compressratio".to_string(),
+            ]
+        );
+
         for (_, dataset) in self.datasets.iter() {
-            self.print_tree_line(
+            self.table_add_row(
+                &mut table,
                 dataset.name.clone(),
                 dataset.used.value,
                 dataset.referenced.value,
@@ -95,7 +106,8 @@ impl Zpool {
                 &dataset.datasettype.value,
             );
             for snapshot in &dataset.children {
-                self.print_tree_line(
+                self.table_add_row(
+                    &mut table,
                     snapshot.name.clone(),
                     snapshot.used.value,
                     snapshot.referenced.value,
@@ -105,32 +117,37 @@ impl Zpool {
             }
         }
 
+        table.print();
+
     }
 
-    fn print_tree_line(
+    fn table_add_row(
         &self,
+        table: &mut Table,
         name: String,
         used: Option<u64>,
         referenced: Option<u64>,
         compressratio: Option<f32>,
-        datasettype: &Option<DatasetType>,
+        _datasettype: &Option<DatasetType>,
     ) {
 
         let used = used.unwrap();
         let referenced = referenced.unwrap();
         let compressratio = compressratio.unwrap();
 
-        let used_msg= format_size(used, DECIMAL);
-        let referenced_msg= format_size(referenced, DECIMAL);
+        let used_msg = used.to_string(); // TODO
+        let referenced_msg = referenced.to_string(); // TODO
         let compressratio_msg = format!("{:.02}", compressratio);
 
-        println!(
-            "{:?} | {:?} | {:?} | {:?}",
-            name,
-            used_msg,
-            referenced_msg,
-            compressratio_msg,
-        );
+        // println!(
+        //     "{:?} | {:?} | {:?} | {:?}",
+        //     name,
+        //     used_msg,
+        //     referenced_msg,
+        //     compressratio_msg,
+        // );
+
+        table.add_row(vec![name, used_msg, referenced_msg, compressratio_msg])
 
     }
 

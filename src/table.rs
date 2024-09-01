@@ -51,8 +51,10 @@ impl Table {
     }
 
     fn print_row(&self, row: &Vec<String>) {
-        for column in row {
-            print!("| {} ", column);
+        for (column, width) in row.iter().zip(&self.widths) {
+            let diff = width - column.len();
+            let buff = str::repeat(" ", diff).to_string();
+            print!("| {}{} ", column, buff);
         }
         print!("|\n");
     }

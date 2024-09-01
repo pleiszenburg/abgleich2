@@ -2,6 +2,8 @@ use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
 use crate::rawproperty::RawProperty;
 
+use humansize::{format_size, DECIMAL};
+
 use std::collections::HashMap;
 use std::io::Read;
 use std::process::{Command, Stdio};
@@ -114,12 +116,20 @@ impl Zpool {
         datasettype: &Option<DatasetType>,
     ) {
 
+        let used = used.unwrap();
+        let referenced = referenced.unwrap();
+        let compressratio = compressratio.unwrap();
+
+        let used_msg= format_size(used, DECIMAL);
+        let referenced_msg= format_size(referenced, DECIMAL);
+        let compressratio_msg = format!("{:.02}", compressratio);
+
         println!(
             "{:?} | {:?} | {:?} | {:?}",
             name,
-            used.unwrap(),
-            referenced.unwrap(),
-            compressratio.unwrap(),
+            used_msg,
+            referenced_msg,
+            compressratio_msg,
         );
 
     }

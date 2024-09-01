@@ -1,0 +1,1 @@
+Experimental re-write of ZFS-sync-tool [abgleich](https://github.com/pleiszenburg/abgleich/) in Rust. Not (at all) working yet.

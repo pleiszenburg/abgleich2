@@ -71,7 +71,7 @@ impl Zpool {
     pub fn print_tree(&self) {
 
         for (_, dataset) in self.datasets.iter() {
-            println!("{:?}", dataset.name);
+            println!("{:?} | {:?}", dataset.name, dataset.datasettype);
         }
 
     }

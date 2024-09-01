@@ -3,6 +3,7 @@ use crate::misc::parse_onoff;
 use crate::origin::Origin;
 use crate::rawproperty::RawProperty;
 
+#[derive(Debug)]
 pub struct Property<T> {
     pub value: Option<T>,
     pub origin: Option<Origin>,

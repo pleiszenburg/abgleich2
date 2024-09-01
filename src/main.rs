@@ -15,6 +15,8 @@ fn main() {
 
     println!("len(datasets) == {:?}", zpool.len());
 
+    zpool.print_tree();
+
     println!("Yay!");
 
 }

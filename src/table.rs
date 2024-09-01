@@ -1,4 +1,6 @@
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
+
+use console::measure_text_width;
 
 pub struct Table {
     head: Vec<String>,
@@ -13,7 +15,7 @@ impl Table {
         let mut widths: Vec<usize> = Vec::new();
         let mut body: HashMap<String, Vec<String>> = HashMap::new();
         for name in &columns{
-            widths.push(name.len());
+            widths.push(measure_text_width(name));
             body.insert(name.to_string(), Vec::new());
         }
         Self {
@@ -32,8 +34,9 @@ impl Table {
             (name, value), width
         ) in self.head.iter().zip(columns.iter()).zip(self.widths.iter_mut()) {
             self.body.get_mut(name).unwrap().push(value.to_string());
-            if value.len() > *width {
-                *width = value.len();
+            let value_len = measure_text_width(value);
+            if value_len > *width {
+                *width = value_len;
             }
         }
         self.rows += 1;
@@ -52,7 +55,7 @@ impl Table {
 
     fn print_row(&self, row: &Vec<String>) {
         for (column, width) in row.iter().zip(&self.widths) {
-            let diff = width - column.len();
+            let diff = width - measure_text_width(column);
             let buff = str::repeat(" ", diff).to_string();
             print!("| {}{} ", column, buff);
         }

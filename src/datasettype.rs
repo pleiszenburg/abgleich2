@@ -7,8 +7,8 @@ pub enum DatasetType {
 }
 
 impl DatasetType {
-    pub fn from_raw(raw: String) -> Self {
-        match raw.as_str() {
+    pub fn from_raw(raw: &str) -> Self {
+        match raw {
             "filesystem" => {
                 Self::Filesystem
             }

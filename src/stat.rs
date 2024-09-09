@@ -17,7 +17,7 @@ impl<T> Stat<T> {
 
 impl Stat<DatasetType> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(DatasetType::from_raw(raw_property.value.clone()));
+        self.value = Some(DatasetType::from_raw(&raw_property.value));
     }
 }
 

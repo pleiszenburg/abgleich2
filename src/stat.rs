@@ -23,7 +23,7 @@ impl Stat<DatasetType> {
 
 impl Stat<bool> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(parse_yesno(raw_property.value.clone()));
+        self.value = Some(parse_yesno(&raw_property.value));
     }
 }
 

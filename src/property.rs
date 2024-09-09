@@ -19,7 +19,7 @@ impl<T> Property<T> {
 
 impl Property<bool> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
-        self.value = Some(parse_onoff(raw_property.value.clone()));
+        self.value = Some(parse_onoff(&raw_property.value));
         self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
     }
 }

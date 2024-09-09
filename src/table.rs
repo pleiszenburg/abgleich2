@@ -34,7 +34,7 @@ impl Table {
         }
     }
 
-    pub fn add_row(&mut self, columns: Vec<String>) {
+    pub fn add_row(&mut self, columns: &Vec<String>) {
         if columns.len() != self.head.len() {
             panic!("table row length mismatch");
         }

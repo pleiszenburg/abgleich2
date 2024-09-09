@@ -153,7 +153,7 @@ impl Zpool {
 
         let compressratio_msg = format!("{:.02}", compressratio);
 
-        table.add_row(vec![name, used_msg, referenced_msg, compressratio_msg])
+        table.add_row(&vec![name, used_msg, referenced_msg, compressratio_msg])
 
     }
 

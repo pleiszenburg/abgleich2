@@ -24,7 +24,7 @@ impl RawProperty {
 
     }
 
-    pub fn from_raw(raw: &String) -> Vec<Self> {
+    pub fn from_raw(raw: &str) -> Vec<Self> {
 
         let lines = raw.split("\n");
         let chars: &[_] = &[' ', '\t'];

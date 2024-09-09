@@ -106,19 +106,19 @@ impl Zpool {
         for (_, dataset) in self.datasets.iter() {
             self.table_add_row(
                 &mut table,
-                dataset.name.clone(),
-                dataset.used.value,
-                dataset.referenced.value,
-                dataset.compressratio.value,
+                &dataset.name,
+                &dataset.used.value,
+                &dataset.referenced.value,
+                &dataset.compressratio.value,
                 &dataset.datasettype.value,
             );
             for snapshot in &dataset.children {
                 self.table_add_row(
                     &mut table,
-                    snapshot.name.clone(),
-                    snapshot.used.value,
-                    snapshot.referenced.value,
-                    snapshot.compressratio.value,
+                    &snapshot.name,
+                    &snapshot.used.value,
+                    &snapshot.referenced.value,
+                    &snapshot.compressratio.value,
                     &snapshot.datasettype.value,
                 );
             }
@@ -131,10 +131,10 @@ impl Zpool {
     fn table_add_row(
         &self,
         table: &mut Table,
-        name: String,
-        used: Option<u64>,
-        referenced: Option<u64>,
-        compressratio: Option<f32>,
+        name: &String,
+        used: &Option<u64>,
+        referenced: &Option<u64>,
+        compressratio: &Option<f32>,
         datasettype: &Option<DatasetType>,
     ) {
 

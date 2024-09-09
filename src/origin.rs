@@ -6,11 +6,11 @@ pub enum Origin {
 }
 
 impl Origin {
-    pub fn from_raw(raw: String) -> Self {
-        if raw == "local".to_string() {
+    pub fn from_raw(raw: &str) -> Self {
+        if raw == "local" {
             return Self::Local;
         }
-        if raw == "default".to_string() {
+        if raw == "default" {
             return Self::Default;
         }
         if raw.starts_with("inherited from") {

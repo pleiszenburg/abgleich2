@@ -20,7 +20,7 @@ impl<T> Property<T> {
 impl Property<bool> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
         self.value = Some(parse_onoff(&raw_property.value));
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+        self.origin = Some(Origin::from_raw(&raw_property.meta));
     }
 }
 
@@ -35,13 +35,13 @@ impl Property<u64> {
                 panic!("u64 parser fail on {:?} with {:?}", raw_property, error);
             }
         }
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+        self.origin = Some(Origin::from_raw(&raw_property.meta));
     }
 }
 
 impl Property<String> {
     pub fn fill(&mut self, raw_property: &RawProperty) {
         self.value = Some(raw_property.value.clone());
-        self.origin = Some(Origin::from_raw(raw_property.meta.clone()));
+        self.origin = Some(Origin::from_raw(&raw_property.meta));
     }
 }

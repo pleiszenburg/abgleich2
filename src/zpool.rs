@@ -49,9 +49,9 @@ impl Zpool {
                 snapshots.push(name.clone());
             }
         }
-        for name in snapshots {
+        for name in snapshots.iter() {
             let (parent, child) = name.split_once("@").unwrap();
-            let mut snapshot = zpool.datasets.shift_remove(&name).unwrap();
+            let mut snapshot = zpool.datasets.shift_remove(name).unwrap();
             snapshot.name = child.to_string();
             zpool.datasets.get_mut(parent).unwrap().add_snapshot(snapshot);
         }

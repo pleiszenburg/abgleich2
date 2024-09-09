@@ -53,11 +53,11 @@ pub struct Dataset {
 
 impl Dataset {
 
-    pub fn new (name: String) -> Self {
+    pub fn new (name: &str) -> Self {
 
         Self {
 
-            name: name,
+            name: name.to_string(),
 
             children: Vec::new(),
 

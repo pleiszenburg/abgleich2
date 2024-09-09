@@ -32,9 +32,9 @@ impl Zpool {
             let item = zpool.datasets.get_mut(name);
             match item {
                 None => {
-                    let mut new_dataset = Dataset::new(name.to_string());
+                    let mut new_dataset = Dataset::new(name);
                     new_dataset.fill(&raw_property);
-                    zpool.datasets.insert(name.to_string(), new_dataset);
+                    zpool.datasets.insert(name.clone(), new_dataset);
                 },
                 _ => {
                     item.unwrap().fill(&raw_property);

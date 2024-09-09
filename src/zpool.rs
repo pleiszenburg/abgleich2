@@ -28,8 +28,8 @@ impl Zpool {
 
         for raw_property in raw_properties {
 
-            let name: String = raw_property.dataset.to_string();
-            let item = zpool.datasets.get_mut(&name);
+            let name: &String = &raw_property.dataset;
+            let item = zpool.datasets.get_mut(name);
             match item {
                 None => {
                     let mut new_dataset = Dataset::new(name.to_string());

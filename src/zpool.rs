@@ -148,13 +148,42 @@ impl Zpool {
         let referenced = referenced.unwrap();
         let compressratio = compressratio.unwrap();
 
-        let used_msg = used.to_string(); // TODO
-        let referenced_msg = referenced.to_string(); // TODO
+        let used_msg = self.storage_si_suffix(used); // TODO
+        let referenced_msg = self.storage_si_suffix(referenced); // TODO
 
         let compressratio_msg = format!("{:.02}", compressratio);
 
         table.add_row(&vec![name, used_msg, referenced_msg, compressratio_msg])
 
+    }
+
+    fn storage_si_suffix(&self, value: u64) -> String {
+        let mut count: u8 = 0;
+        let mut state: f64 = value as f64;
+        while state >= 1024. && count < 5 {
+            state /= 1024.;
+            count += 1;
+        }
+        let suffix: String;
+        if count == 0 {
+            suffix = "B".to_string();
+        }
+        else if count == 1 {
+            suffix = "KiB".to_string();
+        }
+        else if count == 2 {
+            suffix = "MiB".to_string();
+        }
+        else if count == 3 {
+            suffix = "GiB".to_string();
+        }
+        else if count == 4 {
+            suffix = "TiB".to_string();
+        }
+        else { // count >= 5
+            suffix = "PiB".to_string();
+        }
+        format!("{:.02} {}", state, suffix)
     }
 
 }

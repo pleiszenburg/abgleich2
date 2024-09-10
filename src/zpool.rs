@@ -164,26 +164,23 @@ impl Zpool {
             state /= 1024.;
             count += 1;
         }
-        let suffix: String;
+        let number = format!("{:.02}", state);
         if count == 0 {
-            suffix = "B".to_string();
+            return format!("{} B", number).bright_cyan().to_string();
         }
-        else if count == 1 {
-            suffix = "KiB".to_string();
+        if count == 1 {
+            return format!("{} KiB", number).bright_green().to_string();
         }
-        else if count == 2 {
-            suffix = "MiB".to_string();
+        if count == 2 {
+            return format!("{} MiB", number).bright_yellow().to_string();
         }
-        else if count == 3 {
-            suffix = "GiB".to_string();
+        if count == 3 {
+            return format!("{} GiB", number).bright_red().to_string();
         }
-        else if count == 4 {
-            suffix = "TiB".to_string();
+        if count == 4 {
+            return format!("{} TiB", number).bright_cyan().to_string();
         }
-        else { // count >= 5
-            suffix = "PiB".to_string();
-        }
-        format!("{:.02} {}", state, suffix)
+        format!("{} PiB", number).bright_cyan().to_string()
     }
 
 }

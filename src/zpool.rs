@@ -36,8 +36,8 @@ impl Zpool {
                     new_dataset.fill(&raw_property);
                     zpool.datasets.insert(name.clone(), new_dataset);
                 },
-                _ => {
-                    item.unwrap().fill(&raw_property);
+                Some(value) => {
+                    value.fill(&raw_property);
                 }
             }
 

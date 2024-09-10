@@ -115,7 +115,7 @@ impl Zpool {
             for snapshot in &dataset.children {
                 self.table_add_row(
                     &mut table,
-                    &snapshot.name,
+                    &format!(" {}", snapshot.name),
                     &snapshot.used.value,
                     &snapshot.referenced.value,
                     &snapshot.compressratio.value,
@@ -178,9 +178,9 @@ impl Zpool {
             return format!("{} GiB", number).bright_red().to_string();
         }
         if count == 4 {
-            return format!("{} TiB", number).bright_cyan().to_string();
+            return format!("{} TiB", number).bright_cyan().to_string(); // TODO
         }
-        format!("{} PiB", number).bright_cyan().to_string()
+        format!("{} PiB", number).bright_cyan().to_string() // TODO
     }
 
 }

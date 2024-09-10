@@ -178,9 +178,9 @@ impl Zpool {
             return format!("{} GiB", number).bright_red().to_string();
         }
         if count == 4 {
-            return format!("{} TiB", number).bright_cyan().to_string(); // TODO
+            return format!("{} TiB", number).bright_magenta().to_string();
         }
-        format!("{} PiB", number).bright_cyan().to_string() // TODO
+        format!("{} PiB", number).bright_white().to_string()
     }
 
 }

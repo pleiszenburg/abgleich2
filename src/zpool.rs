@@ -63,9 +63,10 @@ impl Zpool {
             zpool.datasets.insert(name.clone(), Dataset::new(meta));
         }
         for name in snapshots {
-            let meta = metas.shift_remove(&name).unwrap();
-            let (parent, _) = name.split_once("@").unwrap();
-            zpool.datasets.get_mut(parent).unwrap().add_snapshot(Snapshot::new(meta));
+            let mut meta = metas.shift_remove(&name).unwrap();
+            let (parent, child) = name.split_once("@").unwrap();
+            meta.name = child.to_string();
+            zpool.datasets.get_mut(parent).unwrap().add_snapshot(Snapshot::new(parent.to_string(), meta));
         }
 
         zpool
@@ -92,11 +93,11 @@ impl Zpool {
 
     }
 
-    pub fn len(&self) -> usize {
+    // pub fn len(&self) -> usize {
 
-        self.datasets.len()
+    //     self.datasets.len()
 
-    }
+    // }
 
     pub fn print_tree(&self) {
 

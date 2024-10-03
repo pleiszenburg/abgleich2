@@ -11,6 +11,8 @@ dependencies = [
  "config",
  "console",
  "indexmap",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]

@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
 
+use crate::settings::Settings;
 use crate::zpool::Zpool;
 
 #[derive(Debug, Parser)] // requires `derive` feature
@@ -34,7 +35,9 @@ pub fn cli() {
     match args.command {
         Commands::Tree { config } => {
 
-            let zpool = Zpool::from_local();
+            let settings = Settings::from_configfile(config.to_str().unwrap());
+
+            let zpool = Zpool::from_local(&settings.source.root);
             zpool.print_tree();
 
         }

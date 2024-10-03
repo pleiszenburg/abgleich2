@@ -73,12 +73,13 @@ impl Zpool {
 
     }
 
-    pub fn from_local() -> Self {
+    pub fn from_local(root: &str) -> Self {
 
         let mut proc = Command::new("zfs")
             .arg("get")
             .arg("all")
             .arg("-rHp")
+            .arg(root)
             .stdout(Stdio::piped())
             .spawn().unwrap();
 

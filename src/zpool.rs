@@ -1,6 +1,8 @@
 use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
+use crate::meta::Meta;
 use crate::rawproperty::RawProperty;
+use crate::snapshot::Snapshot;
 use crate::table::{Table, Alignment};
 
 use colored::Colorize;
@@ -20,40 +22,49 @@ impl Zpool {
 
     pub fn from_raw(raw: String) -> Self {
 
-        let mut zpool = Self {
-            datasets: IndexMap::new(),
-        };
-
         let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw);
 
+        let mut metas: IndexMap<String, Meta> = IndexMap::new();
         for raw_property in raw_properties {
-
             let name: &String = &raw_property.dataset;
-            let item = zpool.datasets.get_mut(name);
+            let item = metas.get_mut(name);
             match item {
                 None => {
-                    let mut new_dataset = Dataset::new(name);
+                    let mut new_dataset = Meta::new(name);
                     new_dataset.fill(&raw_property);
-                    zpool.datasets.insert(name.clone(), new_dataset);
+                    metas.insert(name.clone(), new_dataset);
                 },
                 Some(value) => {
                     value.fill(&raw_property);
                 }
             }
-
         }
 
+        let mut datasets: Vec<String> = Vec::new();
         let mut snapshots: Vec<String> = Vec::new();
-        for (name, _) in zpool.datasets.iter() {
-            if name.contains("@") {
-                snapshots.push(name.clone());
+        for (name, meta) in metas.iter() {
+            match meta.datasettype.value.as_ref().unwrap() {
+                DatasetType::Snapshot => {
+                    snapshots.push(name.clone());
+                },
+                _ => {
+                    datasets.push(name.clone());
+                }
             }
         }
-        for name in snapshots.iter() {
-            let (parent, child) = name.split_once("@").unwrap();
-            let mut snapshot = zpool.datasets.shift_remove(name).unwrap();
-            snapshot.name = child.to_string();
-            zpool.datasets.get_mut(parent).unwrap().add_snapshot(snapshot);
+
+        metas.reverse();  // a bit of performance later on, i.e. less shifting?
+        let mut zpool = Self {
+            datasets: IndexMap::new(),
+        };
+        for name in datasets {
+            let meta = metas.shift_remove(&name).unwrap();
+            zpool.datasets.insert(name.clone(), Dataset::new(meta));
+        }
+        for name in snapshots {
+            let meta = metas.shift_remove(&name).unwrap();
+            let (parent, _) = name.split_once("@").unwrap();
+            zpool.datasets.get_mut(parent).unwrap().add_snapshot(Snapshot::new(meta));
         }
 
         zpool
@@ -103,23 +114,23 @@ impl Zpool {
             ]
         );
 
-        for (_, dataset) in self.datasets.iter() {
+        for dataset in self.datasets.values() {
             self.table_add_row(
                 &mut table,
-                &dataset.name,
-                &dataset.used.value,
-                &dataset.referenced.value,
-                &dataset.compressratio.value,
-                &dataset.datasettype.value,
+                &dataset.meta.name,
+                &dataset.meta.used.value,
+                &dataset.meta.referenced.value,
+                &dataset.meta.compressratio.value,
+                &dataset.meta.datasettype.value,
             );
-            for snapshot in &dataset.children {
+            for snapshot in &dataset.snapshots {
                 self.table_add_row(
                     &mut table,
-                    &format!("- {}", snapshot.name),
-                    &snapshot.used.value,
-                    &snapshot.referenced.value,
-                    &snapshot.compressratio.value,
-                    &snapshot.datasettype.value,
+                    &format!("- {}", snapshot.meta.name),
+                    &snapshot.meta.used.value,
+                    &snapshot.meta.referenced.value,
+                    &snapshot.meta.compressratio.value,
+                    &snapshot.meta.datasettype.value,
                 );
             }
         }

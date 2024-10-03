@@ -16,7 +16,7 @@ impl DatasetType {
                 Self::Volume
             }
             "snapshot" => {
-                Self::Snapshot
+                Self::Volume
             }
             _ => {
                 panic!("expected dataset type");

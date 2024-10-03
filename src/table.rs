@@ -66,10 +66,13 @@ impl Table {
         for ((column, width), align) in row.iter().zip(&self.widths).zip(&self.alignment) {
             let diff = width - measure_text_width(column);
             let buff = str::repeat(" ", diff);
-            if *align == Alignment::Left {
-                print!("| {}{} ", column, buff);
-            } else if *align == Alignment::Right {
-                print!("| {}{} ", buff, column);
+            match *align {
+                Alignment::Left => {
+                    print!("| {}{} ", column, buff);
+                },
+                Alignment::Right => {
+                    print!("| {}{} ", buff, column);
+                }
             }
         }
         print!("|\n");

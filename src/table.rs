@@ -4,16 +4,20 @@ use console::measure_text_width;
 
 #[derive(PartialEq)]
 pub enum Alignment {
+
     Left,
     Right,
+
 }
 
 pub struct Table {
+
     head: Vec<String>,
     body: HashMap<String, Vec<String>>,
     rows: usize,
     widths: Vec<usize>,
     alignment: Vec<Alignment>,
+
 }
 
 impl Table {

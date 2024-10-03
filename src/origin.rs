@@ -1,11 +1,14 @@
 #[derive(Debug)]
 pub enum Origin {
+
     Inherited(String),
     Local,
     Default,
+
 }
 
 impl Origin {
+
     pub fn from_raw(raw: &str) -> Self {
         if raw == "local" {
             return Self::Local;
@@ -18,4 +21,5 @@ impl Origin {
         }
         panic!("expected origin {:?}", raw);
     }
+
 }

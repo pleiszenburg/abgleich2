@@ -8,12 +8,15 @@ use crate::zpool::Zpool;
 #[command(name = "abgleich")]
 #[command(about = "abgleich, zfs sync tool", long_about = None)]
 struct Cli {
+
     #[command(subcommand)]
     command: Commands,
+
 }
 
 #[derive(Debug, Subcommand)]
 enum Commands {
+
     /// show dataset tree
     #[command(arg_required_else_help = true)]
     Tree {
@@ -21,6 +24,7 @@ enum Commands {
         #[arg(required = true)]
         config: PathBuf,
     }
+
 }
 
 pub fn cli() {

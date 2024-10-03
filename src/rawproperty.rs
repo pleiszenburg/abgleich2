@@ -1,10 +1,12 @@
 
 #[derive(Debug)]
 pub struct RawProperty {
+
     pub dataset: String,
     pub name: String,
     pub value: String,
     pub meta: String,
+
 }
 
 impl RawProperty {

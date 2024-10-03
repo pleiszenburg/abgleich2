@@ -93,12 +93,6 @@ impl Zpool {
 
     }
 
-    // pub fn len(&self) -> usize {
-
-    //     self.datasets.len()
-
-    // }
-
     pub fn print_tree(&self) {
 
         let mut table = Table::from_head(

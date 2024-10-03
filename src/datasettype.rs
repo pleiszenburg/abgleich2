@@ -26,21 +26,4 @@ impl DatasetType {
         }
     }
 
-    // pub fn to_string(&self) -> String {
-    //     match &self {
-    //         Self::Filesystem => {
-    //             "filesystem".to_string()
-    //         }
-    //         Self::Volume => {
-    //             "volume".to_string()
-    //         }
-    //         Self::Snapshot => {
-    //             "snapshot".to_string()
-    //         }
-    //         _ => {
-    //             panic!("expected dataset type");
-    //         }
-    //     }
-    // }
-
 }

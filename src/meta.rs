@@ -8,9 +8,6 @@ pub struct Meta {
     // name or ZFS path
     pub name: String,
 
-    // for snapshots
-    pub children: Vec<Self>,
-
     // Properties which can be configured
     pub atime: Property<bool>,
     pub canmount: Property<bool>,
@@ -58,8 +55,6 @@ impl Meta {
         Self {
 
             name: name.to_string(),
-
-            children: Vec::new(),
 
             atime: Property::from_empty(),
             canmount: Property::from_empty(),

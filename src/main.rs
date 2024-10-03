@@ -1,3 +1,4 @@
+mod cli;
 mod dataset;
 mod datasettype;
 mod misc;
@@ -8,9 +9,8 @@ mod stat;
 mod table;
 mod zpool;
 
-use crate::zpool::Zpool;
+use cli::cli;
 
 fn main() {
-    let zpool = Zpool::from_local();
-    zpool.print_tree();
+    cli();
 }

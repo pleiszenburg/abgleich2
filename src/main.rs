@@ -1,4 +1,5 @@
 mod cli;
+mod config;
 mod dataset;
 mod datasettype;
 mod meta;

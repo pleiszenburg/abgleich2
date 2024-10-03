@@ -80,7 +80,7 @@ impl Table {
 
     fn print_bar(&self) {
         for width in &self.widths {
-            let buff = str::repeat("-", *width).to_string();
+            let buff = str::repeat("-", *width);
             print!("|-{}-", buff);
         }
         print!("|\n");

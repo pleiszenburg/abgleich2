@@ -1,6 +1,7 @@
 use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
 use crate::meta::Meta;
+use crate::misc::colorized_storage_si_suffix;
 use crate::rawproperty::RawProperty;
 use crate::snapshot::Snapshot;
 use crate::table::{Table, Alignment};
@@ -159,39 +160,13 @@ impl Zpool {
         let referenced = referenced.unwrap();
         let compressratio = compressratio.unwrap();
 
-        let used_msg = self.storage_si_suffix(used); // TODO
-        let referenced_msg = self.storage_si_suffix(referenced); // TODO
+        let used_msg = colorized_storage_si_suffix(used); // TODO
+        let referenced_msg = colorized_storage_si_suffix(referenced); // TODO
 
         let compressratio_msg = format!("{:.02}", compressratio);
 
         table.add_row(&vec![name, used_msg, referenced_msg, compressratio_msg])
 
-    }
-
-    fn storage_si_suffix(&self, value: u64) -> String {
-        let mut count: u8 = 0;
-        let mut state: f64 = value as f64;
-        while state >= 1024. && count < 5 {
-            state /= 1024.;
-            count += 1;
-        }
-        let number = format!("{:.02}", state);
-        if count == 0 {
-            return format!("{} B", number).bright_cyan().to_string();
-        }
-        if count == 1 {
-            return format!("{} KiB", number).bright_green().to_string();
-        }
-        if count == 2 {
-            return format!("{} MiB", number).bright_yellow().to_string();
-        }
-        if count == 3 {
-            return format!("{} GiB", number).bright_red().to_string();
-        }
-        if count == 4 {
-            return format!("{} TiB", number).bright_magenta().to_string();
-        }
-        format!("{} PiB", number).bright_white().to_string()
     }
 
 }

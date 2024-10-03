@@ -115,7 +115,7 @@ impl Zpool {
             for snapshot in &dataset.children {
                 self.table_add_row(
                     &mut table,
-                    &format!(" {}", snapshot.name),
+                    &format!("- {}", snapshot.name),
                     &snapshot.used.value,
                     &snapshot.referenced.value,
                     &snapshot.compressratio.value,

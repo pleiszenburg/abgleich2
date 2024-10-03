@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
-use crate::zpool::Zpool;
 use clap::{Parser, Subcommand};
+
+use crate::zpool::Zpool;
 
 #[derive(Debug, Parser)] // requires `derive` feature
 #[command(name = "abgleich")]

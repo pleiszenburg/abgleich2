@@ -64,6 +64,7 @@ pub fn cli() {
                 settings.always_changed,
                 settings.written_threshold,
                 settings.check_diff,
+                &settings.ignore,
             );
             transactions.print_table();
 

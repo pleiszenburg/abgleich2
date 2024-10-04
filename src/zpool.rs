@@ -6,20 +6,21 @@ use crate::misc::colorized_storage_si_suffix;
 use crate::rawproperty::RawProperty;
 use crate::snapshot::Snapshot;
 use crate::table::{Table, Alignment};
-use crate::transaction::{self, TransactionList};
+use crate::transaction::TransactionList;
 
 use colored::Colorize;
 use indexmap::IndexMap;
 
 pub struct Zpool {
 
+    root: String,
     datasets: IndexMap<String, Dataset>,
 
 }
 
 impl Zpool {
 
-    pub fn from_raw(raw: String) -> Self {
+    pub fn from_raw(root: &str, raw: String) -> Self {
 
         let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw);
 
@@ -54,6 +55,7 @@ impl Zpool {
 
         metas.reverse();  // a bit of performance later on, i.e. less shifting?
         let mut zpool = Self {
+            root: root.to_string(),
             datasets: IndexMap::new(),
         };
         for name in datasets {
@@ -81,15 +83,24 @@ impl Zpool {
             root.to_string(),
         ]).run();  // TODO on_side
 
-        Self::from_raw(raw)
+        Self::from_raw(root, raw)
 
     }
 
-    pub fn get_snapshot_transaction(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) -> TransactionList{
+    pub fn get_snapshot_transaction(
+        &self,
+        always_changed: bool,
+        written_threshold: Option<u64>,
+        check_diff: bool,
+        ignore: &Vec<String>,
+    ) -> TransactionList{
 
         let mut transactions = TransactionList::new();
 
         for (name, dataset) in self.datasets.iter() {
+            if ignore.iter().any(|e| format!("{}/{}", self.root, e) == *name) {
+                continue;
+            }
             if !dataset.contains_changes(always_changed, written_threshold, check_diff) {
                 continue;
             }

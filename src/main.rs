@@ -11,6 +11,7 @@ mod settings;
 mod snapshot;
 mod stat;
 mod table;
+mod transaction;
 mod zpool;
 
 use cli::cli;

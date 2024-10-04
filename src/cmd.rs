@@ -43,4 +43,10 @@ impl Cmd {
 
     }
 
+    pub fn to_string(&self) -> String {
+
+        self.fragments.join(" ")
+
+    }
+
 }

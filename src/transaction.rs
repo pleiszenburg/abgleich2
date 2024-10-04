@@ -1,6 +1,6 @@
 use crate::cmd::Cmd;
-
-use indexmap::IndexMap;
+use crate::misc::colorized_storage_si_suffix;
+use crate::table::{Alignment, Table};
 
 pub struct SnapshotMeta {
 
@@ -12,16 +12,14 @@ pub struct SnapshotMeta {
 
 impl SnapshotMeta {
 
-    pub fn as_table_row(&self) -> IndexMap<String, String> {
+    pub fn to_string(&self) -> String {
 
-        let mut row: IndexMap<String, String> = IndexMap::new();
-
-        row.insert("type".to_string(), "snapshot".to_string());
-        row.insert("written".to_string(), format!("{}", self.written));
-        row.insert("parent".to_string(), self.parent.clone());
-        row.insert("name".to_string(), self.name.clone());
-
-        row
+        format!(
+            "New Snapshot: {}@{} ({})",
+            self.parent,
+            self.name,
+            colorized_storage_si_suffix(self.written),
+        )
 
     }
 
@@ -43,10 +41,10 @@ impl TransactionMeta {
         })
     }
 
-    pub fn as_table_row(&self) -> IndexMap<String, String> {
+    pub fn to_string(&self) -> String {
         match self {
             Self::Snapshot(meta) => {
-                meta.as_table_row()
+                meta.to_string()
             }
         }
     }
@@ -69,8 +67,8 @@ impl Transaction {
         }
     }
 
-    pub fn as_table_row(&self) -> IndexMap<String, String> {
-        self.meta.as_table_row()
+    pub fn to_string(&self) -> (String, String) {
+        (self.meta.to_string(), self.cmd.to_string())
     }
 
     pub fn run(&self) -> (String, String) {
@@ -98,7 +96,22 @@ impl TransactionList {
     }
 
     pub fn print_table(&self) {
-        println!("Snapshot table! {}", self.transactions.len());
+        let mut table = Table::from_head(
+            vec![
+                "description".to_string(),
+                "command".to_string(),
+            ],
+            vec![
+                Alignment::Left,
+                Alignment::Left,
+            ]
+        );
+        for transaction in self.transactions.iter() {
+            let (description, command) = transaction.to_string();
+            table.add_row(&vec![description, command]);
+        }
+
+        table.print();
     }
 
 }

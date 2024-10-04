@@ -1,7 +1,7 @@
 use crate::cmd::Cmd;
 use crate::datasettype::DatasetType;
 use crate::meta::Meta;
-use crate::snapshot::{self, Snapshot};
+use crate::snapshot::Snapshot;
 
 pub struct Dataset {
 

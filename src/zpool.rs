@@ -78,7 +78,7 @@ impl Zpool {
             "all".to_string(),
             "-rHp".to_string(),
             root.to_string(),
-        ]).run();
+        ]).run();  // TODO on_side
 
         Self::from_raw(raw)
 

@@ -97,4 +97,8 @@ impl TransactionList {
         self.transactions.push(transaction);
     }
 
+    pub fn print_table(&self) {
+        println!("Snapshot table! {}", self.transactions.len());
+    }
+
 }

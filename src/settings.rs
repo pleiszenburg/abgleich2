@@ -21,7 +21,7 @@ pub struct Settings {
     pub keep_snapshots: u64,
     pub keep_backlog: bool,
     pub always_changed: bool,
-    pub written_threshold: u64,
+    pub written_threshold: Option<u64>,
     pub check_diff: bool,
     pub suffix: String,
     pub digits: u64,

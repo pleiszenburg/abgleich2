@@ -23,7 +23,7 @@ impl Dataset {
         self.snapshots.push(snapshot);
     }
 
-    pub fn is_changed(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) -> bool {
+    pub fn contains_changes(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) -> bool {
 
         if always_changed {
             return true;

@@ -1,3 +1,4 @@
+use crate::cmd::Cmd;
 use crate::dataset::Dataset;
 use crate::datasettype::DatasetType;
 use crate::meta::Meta;
@@ -8,10 +9,6 @@ use crate::table::{Table, Alignment};
 
 use colored::Colorize;
 use indexmap::IndexMap;
-
-// use std::collections::HashMap;
-use std::io::Read;
-use std::process::{Command, Stdio};
 
 pub struct Zpool {
 
@@ -75,22 +72,15 @@ impl Zpool {
 
     pub fn from_local(root: &str) -> Self {
 
-        let mut proc = Command::new("zfs")
-            .arg("get")
-            .arg("all")
-            .arg("-rHp")
-            .arg(root)
-            .stdout(Stdio::piped())
-            .spawn().unwrap();
+        let (raw, _) = Cmd::new(vec![
+            "zfs".to_string(),
+            "get".to_string(),
+            "all".to_string(),
+            "-rHp".to_string(),
+            root.to_string(),
+        ]).run();
 
-        let proc_stdout = proc.stdout.as_mut().unwrap();
-        let mut stdout_buffer = String::new();
-
-        let _read_res = proc_stdout.read_to_string(&mut stdout_buffer); // TODO
-
-        let _output = proc.wait_with_output(); // TODO
-
-        Self::from_raw(stdout_buffer)
+        Self::from_raw(raw)
 
     }
 

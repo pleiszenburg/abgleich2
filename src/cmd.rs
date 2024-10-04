@@ -17,45 +17,29 @@ impl Cmd {
         }
     }
 
-    pub fn run(&self) -> String {
+    pub fn run(&self) -> (String, String) {
 
         let mut command1 = Command::new(
             OsStr::new(self.fragments[0].as_str())
         );
         let command2 = command1.args(
             self.fragments[1..].iter()
-        ).stdout(Stdio::piped());
+        ).stdout(Stdio::piped()).stderr(Stdio::piped());
 
-        match command2.spawn() {
-            Ok(mut child) => {
-                match child.stdout.as_mut() {
-                    Some(child_stdout) => {
-                        let mut stdout_buffer = String::new();
-                        match child_stdout.read_to_string(&mut stdout_buffer) {
-                            Ok(_) => {
-                                match child.wait() {
-                                    Ok(_) => {
-                                        stdout_buffer
-                                    },
-                                    Err(err) => {
-                                        panic!("command finished with errors\n{}", err);
-                                    }
-                                }
-                            },
-                            Err(err) => {
-                                panic!("failed to read from command stdout\n{}", err);
-                            }
-                        }
-                    },
-                    _ => {
-                        panic!("failed to attach to command stdout");
-                    },
-                }
-            },
-            Err(err) => {
-                panic!("command spawn failed\n{}", err);
-            }
-        }
+        let mut child = command2.spawn().expect("command spawn into child failed");
+
+        let child_stdout = child.stdout.as_mut().expect("failed to attach to child stdout");
+        let child_stderr = child.stderr.as_mut().expect("failed to attach to child stderr");
+
+        let mut stdout_buffer = String::new();
+        let mut stderr_buffer = String::new();
+
+        child_stdout.read_to_string(&mut stdout_buffer).expect("failed to read from child stdout");
+        child_stderr.read_to_string(&mut stderr_buffer).expect("failed to read from child stderr");
+
+        child.wait().expect("child finished with errors");
+
+        (stdout_buffer, stderr_buffer)
 
     }
 

@@ -85,7 +85,7 @@ impl Zpool {
 
     }
 
-    pub fn print_snapshottargets(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) {
+    pub fn get_snapshot_transaction(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) -> TransactionList{
 
         let mut transactions = TransactionList::new();
 
@@ -96,7 +96,7 @@ impl Zpool {
             transactions.append(dataset.get_snapshot_transaction());
         }
 
-        transactions.print_table();
+        transactions
 
     }
 

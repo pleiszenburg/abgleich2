@@ -84,9 +84,16 @@ impl Zpool {
 
     }
 
-    pub fn print_snapshottargets(&self) {
+    pub fn print_snapshottargets(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) {
 
         println!("Snapshots!");
+
+        for (name, dataset) in self.datasets.iter() {
+            if !dataset.contains_changes(always_changed, written_threshold, check_diff) {
+                continue;
+            }
+            println!("{}", name);
+        }
 
     }
 

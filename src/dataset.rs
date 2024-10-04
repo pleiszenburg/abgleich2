@@ -64,9 +64,7 @@ impl Dataset {
 
     }
 
-    pub fn get_snapshot_transaction(&self) -> Transaction {
-
-        let snapshot_name = "foobar".to_string();  // TODO
+    pub fn get_snapshot_transaction(&self, snapshot_name: String) -> Transaction {
 
         Transaction::new(
             TransactionMeta::new_snapshot(

@@ -8,6 +8,7 @@ use crate::snapshot::Snapshot;
 use crate::table::{Table, Alignment};
 use crate::transaction::TransactionList;
 
+use chrono::{Utc, DateTime};
 use colored::Colorize;
 use indexmap::IndexMap;
 
@@ -92,6 +93,7 @@ impl Zpool {
         always_changed: bool,
         written_threshold: Option<u64>,
         check_diff: bool,
+        suffix: &str,
         ignore: &Vec<String>,
     ) -> TransactionList{
 
@@ -104,10 +106,18 @@ impl Zpool {
             if !dataset.contains_changes(always_changed, written_threshold, check_diff) {
                 continue;
             }
-            transactions.append(dataset.get_snapshot_transaction());
+            transactions.append(dataset.get_snapshot_transaction(self.get_snapshot_name(suffix)));
         }
 
         transactions
+
+    }
+
+    fn get_snapshot_name(&self, suffix: &str) -> String {
+
+        let now = Utc::now();
+
+        format!("{}{}", now.format("%Y%m%d_%H%M%S"), suffix)
 
     }
 

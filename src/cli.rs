@@ -60,7 +60,7 @@ pub fn cli() {
             let settings = Settings::from_configfile(config.to_str().unwrap());
 
             let zpool = Zpool::from_local(&settings.source.root);
-            zpool.print_tree();
+            zpool.print_snapshottargets();
 
         },
 

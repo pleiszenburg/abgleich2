@@ -84,6 +84,12 @@ impl Zpool {
 
     }
 
+    pub fn print_snapshottargets(&self) {
+
+        println!("Snapshots!");
+
+    }
+
     pub fn print_tree(&self) {
 
         let mut table = Table::from_head(

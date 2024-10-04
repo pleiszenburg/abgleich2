@@ -78,3 +78,23 @@ impl Transaction {
     }
 
 }
+
+pub struct TransactionList {
+
+    transactions: Vec<Transaction>,
+
+}
+
+impl TransactionList {
+
+    pub fn new() -> Self {
+        Self {
+            transactions: Vec::new(),
+        }
+    }
+
+    pub fn append(&mut self, transaction: Transaction) {
+        self.transactions.push(transaction);
+    }
+
+}

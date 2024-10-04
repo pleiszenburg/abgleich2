@@ -6,6 +6,7 @@ use crate::misc::colorized_storage_si_suffix;
 use crate::rawproperty::RawProperty;
 use crate::snapshot::Snapshot;
 use crate::table::{Table, Alignment};
+use crate::transaction::{self, TransactionList};
 
 use colored::Colorize;
 use indexmap::IndexMap;
@@ -88,12 +89,14 @@ impl Zpool {
 
         println!("Snapshots!");
 
+        let mut transactions = TransactionList::new();
+
         for (name, dataset) in self.datasets.iter() {
             if !dataset.contains_changes(always_changed, written_threshold, check_diff) {
                 continue;
             }
             println!("{}", name);
-            _ = dataset.get_snapshot_transaction();
+            transactions.append(dataset.get_snapshot_transaction());
         }
 
     }

@@ -2,6 +2,7 @@ use crate::cmd::Cmd;
 use crate::datasettype::DatasetType;
 use crate::meta::Meta;
 use crate::snapshot::Snapshot;
+use crate::transaction::{Transaction, TransactionMeta};
 
 pub struct Dataset {
 
@@ -13,14 +14,18 @@ pub struct Dataset {
 impl Dataset {
 
     pub fn new(meta: Meta) -> Self {
+
         Self {
             meta: meta,
             snapshots: Vec::new(),
         }
+
     }
 
     pub fn add_snapshot(&mut self, snapshot: Snapshot) {
+
         self.snapshots.push(snapshot);
+
     }
 
     pub fn contains_changes(&self, always_changed: bool, written_threshold: Option<u64>, check_diff: bool) -> bool {
@@ -56,6 +61,25 @@ impl Dataset {
         ]).run();  // TODO on_side
 
         raw.trim_matches(&[' ', '\n', '\t']).len() > 0
+
+    }
+
+    pub fn get_snapshot_transaction(&self) -> Transaction {
+
+        let snapshot_name = "foobar".to_string();  // TODO
+
+        Transaction::new(
+            TransactionMeta::new_snapshot(
+                self.meta.written.value.unwrap(),
+                self.meta.name.clone(),
+                snapshot_name.clone(),
+            ),
+            Cmd::new(vec![
+                "zfs".to_string(),
+                "snapshot".to_string(),
+                format!("{}@{}", self.meta.name, snapshot_name),
+            ]),  // TODO on_side
+        )
 
     }
 

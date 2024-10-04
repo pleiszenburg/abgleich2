@@ -93,6 +93,7 @@ impl Zpool {
                 continue;
             }
             println!("{}", name);
+            _ = dataset.get_snapshot_transaction();
         }
 
     }

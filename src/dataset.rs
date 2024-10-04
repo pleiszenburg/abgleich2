@@ -1,6 +1,7 @@
+use crate::cmd::Cmd;
 use crate::datasettype::DatasetType;
 use crate::meta::Meta;
-use crate::snapshot::Snapshot;
+use crate::snapshot::{self, Snapshot};
 
 pub struct Dataset {
 
@@ -48,16 +49,13 @@ impl Dataset {
             return true;
         }
 
-        // output, _ = (
-        //     Command.from_list(
-        //         ["zfs", "diff", f"{self._name:s}@{self._snapshots[-1].name:s}"]
-        //     )
-        //     .on_side(side=self._side, config=self._config)
-        //     .run()
-        // )
-        // return len(output[0].strip(" \t\n")) > 0
+        let (raw, _) = Cmd::new(vec![
+            "zfs".to_string(),
+            "diff".to_string(),
+            format!("{}@{}", self.meta.name, self.snapshots.last().unwrap().meta.name).to_string(),
+        ]).run();  // TODO on_side
 
-        false  // TODO
+        raw.trim_matches(&[' ', '\n', '\t']).len() > 0
 
     }
 

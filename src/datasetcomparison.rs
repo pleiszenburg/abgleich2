@@ -1,4 +1,8 @@
-use crate::dataset::Dataset;
+use config::Source;
+
+use crate::{dataset::Dataset, snapshot};
+
+use std::collections::HashSet;
 
 pub struct DatasetComparison<'a> {
     source: Option<&'a Dataset>,
@@ -16,11 +20,39 @@ impl DatasetComparison<'_> {
 
     }
 
+    pub fn get_redundant_snapshots(&self) -> Vec<String> {
+
+        let source = self.source.expect("source not present");
+        let target = self.target.expect("target not present");
+
+        let mut source_snapshots: HashSet<String> = HashSet::new();
+        for source_snapshot in source.snapshots.iter() {
+            source_snapshots.insert(source_snapshot.meta.name.clone());
+        }
+
+        let mut redundant_snapshots: Vec<String> = Vec::new();
+        for target_snapshot in target.snapshots.iter() {
+            if source_snapshots.contains(&target_snapshot.meta.name) {
+                redundant_snapshots.push(target_snapshot.meta.name.clone());
+            }
+        }
+
+        redundant_snapshots
+
+    }
+
     pub fn print_table(&self) {
 
         let source_status = self.dataset_status(self.source);
         let target_status = self.dataset_status(self.target);
+
         println!("{} <=> {}", source_status, target_status);
+
+        let redundant_snapshots = self.get_redundant_snapshots();
+
+        for snapshot in redundant_snapshots.iter() {
+            println!("  - {}", snapshot);
+        }
 
     }
 

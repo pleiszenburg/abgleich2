@@ -51,9 +51,9 @@ impl Cmd {
 
     }
 
-    pub fn on_host(&self, args: Option<String>, hostname: String) -> Self {
+    pub fn on_host(&self, host: &str, args: Option<&str>) -> Self {
 
-        if hostname == "localhost" {
+        if host == "localhost" {
             return self.clone();
         }
 
@@ -61,13 +61,13 @@ impl Cmd {
 
         match args {
             Some(args) => {
-                let mut args_fragments = split(&args).expect("could not split args");
+                let mut args_fragments = split(args).expect("could not split args");
                 fragments.append(&mut args_fragments);
             }
             _ => {}
         }
 
-        fragments.push(hostname.clone());
+        fragments.push(host.to_string());
 
         let mut self_fragments_ref: Vec<&str> = Vec::new();
         for fragment in self.fragments.iter() {

@@ -51,12 +51,18 @@ impl Cmd {
 
     }
 
-    pub fn on_host(&self, args: String, hostname: String) -> Self {
-
-        let mut args_fragments = split(&args).expect("could not split args");
+    pub fn on_host(&self, args: Option<String>, hostname: String) -> Self {
 
         let mut fragments: Vec<String> = vec!["ssh".to_string()];
-        fragments.append(&mut args_fragments);
+
+        match args {
+            Some(args) => {
+                let mut args_fragments = split(&args).expect("could not split args");
+                fragments.append(&mut args_fragments);
+            }
+            _ => {}
+        }
+
         fragments.push(hostname.clone());
 
         let mut self_fragments_ref: Vec<&str> = Vec::new();

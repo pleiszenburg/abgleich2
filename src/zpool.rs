@@ -117,7 +117,7 @@ impl Zpool {
 
     fn get_snapshot_name(&self, suffix: &str) -> String {
 
-        let now = Utc::now();
+        let now: DateTime<Utc> = Utc::now();
 
         format!("{}{}", now.format("%Y%m%d_%H%M%S"), suffix)
 

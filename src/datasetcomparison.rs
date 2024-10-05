@@ -35,14 +35,19 @@ impl DatasetComparison<'_> {
                     }
                 }
 
-                let mut validate_source: Vec<usize> = Vec::new();
-                for redundant_snapshot in redundant_snapshots.iter() {
-                    validate_source.push(
-                        source.snapshots.iter().position(|r| r.meta.name == *redundant_snapshot).unwrap()
-                    );
+                if redundant_snapshots.len() < 2 {
+                    return redundant_snapshots;
                 }
-                for idx in 1..redundant_snapshots.len() {
-                    if redundant_snapshots[idx - 1] >= redundant_snapshots[idx] {
+
+                let mut idx = 0;
+                let mut found: bool;
+                for redundant_snapshot in redundant_snapshots.iter() {
+                    found = false;
+                    while (idx < source.snapshots.len()) & !found {
+                        found = source.snapshots[idx].meta.name == *redundant_snapshot;
+                        idx += 1;
+                    }
+                    if (idx >= source.snapshots.len()) & !found {
                         panic!("redundant snapshot sequence validation failed on source");
                     }
                 }

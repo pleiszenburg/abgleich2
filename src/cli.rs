@@ -38,6 +38,16 @@ enum Commands {
 
     },
 
+    /// backup a dataset tree into another
+    #[command(arg_required_else_help = true)]
+    Backup {
+
+        /// configuration file
+        #[arg(required = true)]
+        config: PathBuf,
+
+    },
+
 }
 
 pub fn cli() {
@@ -68,6 +78,21 @@ pub fn cli() {
                 &settings.ignore,
             );
             transactions.print_table();
+
+            // TODO ask confirmation, trigger transactions
+
+        },
+
+        Commands::Backup { config } => {
+
+            let settings = Settings::from_configfile(config.to_str().unwrap());
+
+            let source = Zpool::from_cmd(&settings.source.host, &settings.source.root);
+            let target = Zpool::from_cmd(&settings.target.host, &settings.target.root);
+
+            println!("Backup!");
+
+            // TODO ask confirmation, trigger transactions
 
         },
 

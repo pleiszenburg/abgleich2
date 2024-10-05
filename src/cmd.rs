@@ -53,6 +53,10 @@ impl Cmd {
 
     pub fn on_host(&self, args: Option<String>, hostname: String) -> Self {
 
+        if hostname == "localhost" {
+            return self.clone();
+        }
+
         let mut fragments: Vec<String> = vec!["ssh".to_string()];
 
         match args {
@@ -73,6 +77,21 @@ impl Cmd {
         fragments.push(try_join(self_fragments_ref).expect("could not join command"));
 
         Self::new(fragments)
+
+    }
+
+}
+
+impl Clone for Cmd {
+
+    fn clone(&self) -> Self {
+
+        let mut new_fragments: Vec<String> = Vec::new();
+        for fragment in &self.fragments {
+            new_fragments.push(fragment.clone());
+        }
+
+        Self::new(new_fragments)
 
     }
 

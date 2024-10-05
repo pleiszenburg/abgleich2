@@ -22,22 +22,30 @@ impl DatasetComparison<'_> {
 
     pub fn get_redundant_snapshots(&self) -> Vec<String> {
 
-        let source = self.source.expect("source not present");
-        let target = self.target.expect("target not present");
+        match (self.source, self.target) {
+            (Some(source), Some(target)) => {
 
-        let mut source_snapshots: HashSet<String> = HashSet::new();
-        for source_snapshot in source.snapshots.iter() {
-            source_snapshots.insert(source_snapshot.meta.name.clone());
+                let mut source_snapshots: HashSet<String> = HashSet::new();
+                for source_snapshot in source.snapshots.iter() {
+                    source_snapshots.insert(source_snapshot.meta.name.clone());
+                }
+
+                let mut redundant_snapshots: Vec<String> = Vec::new();
+                for target_snapshot in target.snapshots.iter() {
+                    if source_snapshots.contains(&target_snapshot.meta.name) {
+                        redundant_snapshots.push(target_snapshot.meta.name.clone());
+                    }
+                }
+
+                redundant_snapshots
+
+            },
+            _ => {
+
+                vec![]
+
+            },
         }
-
-        let mut redundant_snapshots: Vec<String> = Vec::new();
-        for target_snapshot in target.snapshots.iter() {
-            if source_snapshots.contains(&target_snapshot.meta.name) {
-                redundant_snapshots.push(target_snapshot.meta.name.clone());
-            }
-        }
-
-        redundant_snapshots
 
     }
 
@@ -49,7 +57,6 @@ impl DatasetComparison<'_> {
         println!("{} <=> {}", source_status, target_status);
 
         let redundant_snapshots = self.get_redundant_snapshots();
-
         for snapshot in redundant_snapshots.iter() {
             println!("  - {}", snapshot);
         }

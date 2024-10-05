@@ -1,6 +1,7 @@
 mod cli;
 mod cmd;
 mod dataset;
+mod datasetcomparison;
 mod datasettype;
 mod meta;
 mod misc;

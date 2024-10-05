@@ -14,6 +14,7 @@ use indexmap::IndexMap;
 
 pub struct Zpool {
 
+    host: String,
     root: String,
     datasets: IndexMap<String, Dataset>,
 
@@ -21,7 +22,7 @@ pub struct Zpool {
 
 impl Zpool {
 
-    pub fn from_raw(root: &str, raw: String) -> Self {
+    pub fn from_raw(host: &str, root: &str, raw: String) -> Self {
 
         let raw_properties: Vec<RawProperty> = RawProperty::from_raw(&raw);
 
@@ -56,6 +57,7 @@ impl Zpool {
 
         metas.reverse();  // a bit of performance later on, i.e. less shifting?
         let mut zpool = Self {
+            host: host.to_string(),
             root: root.to_string(),
             datasets: IndexMap::new(),
         };
@@ -74,7 +76,7 @@ impl Zpool {
 
     }
 
-    pub fn from_local(root: &str) -> Self {
+    pub fn from_cmd(host: &str, root: &str) -> Self {
 
         let (raw, _) = Cmd::new(vec![
             "zfs".to_string(),
@@ -82,9 +84,9 @@ impl Zpool {
             "all".to_string(),
             "-rHp".to_string(),
             root.to_string(),
-        ]).run();  // TODO on_side
+        ]).on_host(host, None).run();
 
-        Self::from_raw(root, raw)
+        Self::from_raw(host, root, raw)
 
     }
 
@@ -141,7 +143,7 @@ impl Zpool {
         for dataset in self.datasets.values() {
             self.table_add_row(
                 &mut table,
-                &dataset.meta.name,
+                &format!("{}:{}", self.host, dataset.meta.name),
                 &dataset.meta.used.value,
                 &dataset.meta.referenced.value,
                 &dataset.meta.compressratio.value,

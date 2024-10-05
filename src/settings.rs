@@ -24,7 +24,6 @@ pub struct Settings {
     pub written_threshold: Option<u64>,
     pub check_diff: bool,
     pub suffix: String,
-    pub digits: u64,
 
     pub ignore: Vec<String>,
 

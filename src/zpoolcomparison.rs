@@ -1,3 +1,4 @@
+use crate::datasetcomparison::DatasetComparison;
 use crate::zpool::Zpool;
 
 use std::collections::HashSet;
@@ -38,21 +39,30 @@ impl ZpoolComparison {
 
     }
 
+    fn get_dataset_comparisons(&self, unique_datasets: Vec<&Option<String>>) -> Vec<DatasetComparison> {
+
+        let mut dataset_comparisons: Vec<DatasetComparison> = Vec::new();
+
+        for relname in unique_datasets {
+            dataset_comparisons.push(DatasetComparison::new(
+                self.source.get_dataset_by_relname(relname),
+                self.target.get_dataset_by_relname(relname),
+            ));
+        }
+
+        dataset_comparisons
+
+    }
+
     pub fn print_table(&self) {
 
         println!("Compare: {} vs {}", self.source.len(), self.target.len());
 
         let unique_datasets = self.get_unique_datasets();
+        let dataset_comparisons: Vec<DatasetComparison> = self.get_dataset_comparisons(unique_datasets);
 
-        for relname in unique_datasets {
-            match &relname {
-                Some(relname) => {
-                    println!("{}", relname);
-                },
-                _ => {
-                    println!("(None)");
-                },
-            }
+        for dataset_comparison in dataset_comparisons {
+            dataset_comparison.print_table();
         }
 
     }

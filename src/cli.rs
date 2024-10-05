@@ -50,7 +50,7 @@ pub fn cli() {
 
             let settings = Settings::from_configfile(config.to_str().unwrap());
 
-            let zpool = Zpool::from_local(&settings.source.root);
+            let zpool = Zpool::from_cmd(&settings.source.host, &settings.source.root);
             zpool.print_tree();
 
         },
@@ -59,7 +59,7 @@ pub fn cli() {
 
             let settings = Settings::from_configfile(config.to_str().unwrap());
 
-            let zpool = Zpool::from_local(&settings.source.root);
+            let zpool = Zpool::from_cmd(&settings.source.host, &settings.source.root);
             let transactions = zpool.get_snapshot_transaction(
                 settings.always_changed,
                 settings.written_threshold,

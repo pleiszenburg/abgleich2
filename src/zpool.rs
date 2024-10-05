@@ -63,7 +63,7 @@ impl Zpool {
         };
         for name in datasets {
             let meta = metas.shift_remove(&name).unwrap();
-            zpool.datasets.insert(name.clone(), Dataset::new(meta));
+            zpool.datasets.insert(name.clone(), Dataset::new(host, meta));
         }
         for name in snapshots {
             let mut meta = metas.shift_remove(&name).unwrap();

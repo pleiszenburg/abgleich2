@@ -6,6 +6,7 @@ use crate::transaction::{Transaction, TransactionMeta};
 
 pub struct Dataset {
 
+    pub host: String,
     pub meta: Meta,
     pub snapshots: Vec<Snapshot>,
 
@@ -13,9 +14,10 @@ pub struct Dataset {
 
 impl Dataset {
 
-    pub fn new(meta: Meta) -> Self {
+    pub fn new(host: &str, meta: Meta) -> Self {
 
         Self {
+            host: host.to_string(),
             meta: meta,
             snapshots: Vec::new(),
         }
@@ -58,7 +60,7 @@ impl Dataset {
             "zfs".to_string(),
             "diff".to_string(),
             format!("{}@{}", self.meta.name, self.snapshots.last().unwrap().meta.name).to_string(),
-        ]).run();  // TODO on_side
+        ]).on_host(&self.host, None).run();
 
         raw.trim_matches(&[' ', '\n', '\t']).len() > 0
 
@@ -76,7 +78,7 @@ impl Dataset {
                 "zfs".to_string(),
                 "snapshot".to_string(),
                 format!("{}@{}", self.meta.name, snapshot_name),
-            ]),  // TODO on_side
+            ]).on_host(&self.host, None),
         )
 
     }

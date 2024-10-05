@@ -2,6 +2,8 @@ use std::ffi::OsStr;
 use std::io::Read;
 use std::process::{Command, Stdio};
 
+use shlex::{try_join, split};
+
 pub struct Cmd {
 
     fragments: Vec<String>,
@@ -46,6 +48,25 @@ impl Cmd {
     pub fn to_string(&self) -> String {
 
         self.fragments.join(" ")
+
+    }
+
+    pub fn on_host(&self, args: String, hostname: String) -> Self {
+
+        let mut args_fragments = split(&args).expect("could not split args");
+
+        let mut fragments: Vec<String> = vec!["ssh".to_string()];
+        fragments.append(&mut args_fragments);
+        fragments.push(hostname.clone());
+
+        let mut self_fragments_ref: Vec<&str> = Vec::new();
+        for fragment in self.fragments.iter() {
+            self_fragments_ref.push(&fragment.as_str());
+        }
+
+        fragments.push(try_join(self_fragments_ref).expect("could not join command"));
+
+        Self::new(fragments)
 
     }
 

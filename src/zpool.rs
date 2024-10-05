@@ -16,7 +16,7 @@ pub struct Zpool {
 
     host: String,
     root: String,
-    datasets: IndexMap<String, Dataset>,
+    pub datasets: IndexMap<String, Dataset>,
 
 }
 
@@ -63,7 +63,7 @@ impl Zpool {
         };
         for name in datasets {
             let meta = metas.shift_remove(&name).unwrap();
-            zpool.datasets.insert(name.clone(), Dataset::new(host, meta));
+            zpool.datasets.insert(name.clone(), Dataset::new(host, root, meta));
         }
         for name in snapshots {
             let mut meta = metas.shift_remove(&name).unwrap();

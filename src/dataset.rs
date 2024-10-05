@@ -7,6 +7,7 @@ use crate::transaction::{Transaction, TransactionMeta};
 pub struct Dataset {
 
     pub host: String,
+    pub relname: Option<String>,
     pub meta: Meta,
     pub snapshots: Vec<Snapshot>,
 
@@ -14,10 +15,18 @@ pub struct Dataset {
 
 impl Dataset {
 
-    pub fn new(host: &str, meta: Meta) -> Self {
+    pub fn new(host: &str, root: &str, meta: Meta) -> Self {
+
+        let relname: Option<String>;
+        if meta.name == root {
+            relname = None;
+        } else {
+            relname = Some(meta.name[root.len()+1..].to_string());
+        }
 
         Self {
             host: host.to_string(),
+            relname: relname,
             meta: meta,
             snapshots: Vec::new(),
         }

@@ -1,9 +1,10 @@
+use crate::settings::Settings;
+use crate::zpool::Zpool;
+use crate::zpoolcomparison::ZpoolComparison;
+
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
-
-use crate::settings::Settings;
-use crate::zpool::Zpool;
 
 #[derive(Debug, Parser)] // requires `derive` feature
 #[command(name = "abgleich")]
@@ -90,7 +91,8 @@ pub fn cli() {
             let source = Zpool::from_cmd(&settings.source.host, &settings.source.root);
             let target = Zpool::from_cmd(&settings.target.host, &settings.target.root);
 
-            println!("Backup!");
+            let comparison = ZpoolComparison::new(source, target);
+            comparison.print_table();
 
             // TODO ask confirmation, trigger transactions
 

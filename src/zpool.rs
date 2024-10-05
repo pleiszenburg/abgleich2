@@ -90,6 +90,12 @@ impl Zpool {
 
     }
 
+    pub fn len(&self) -> usize {
+
+        self.datasets.len()
+
+    }
+
     pub fn get_snapshot_transaction(
         &self,
         always_changed: bool,

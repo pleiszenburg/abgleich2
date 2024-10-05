@@ -13,6 +13,7 @@ mod stat;
 mod table;
 mod transaction;
 mod zpool;
+mod zpoolcomparison;
 
 use cli::cli;
 

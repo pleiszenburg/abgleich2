@@ -96,6 +96,22 @@ impl Zpool {
 
     }
 
+    pub fn get_dataset_by_relname(&self, relname: &Option<String>) -> Option<&Dataset> {
+
+        let name: String;
+        match relname {
+            Some(relname) => {
+                name = format!("{}/{}", self.root, relname);
+            },
+            _ => {
+                name = self.root.clone();
+            },
+        }
+
+        self.datasets.get(&name)
+
+    }
+
     pub fn get_snapshot_transaction(
         &self,
         always_changed: bool,
